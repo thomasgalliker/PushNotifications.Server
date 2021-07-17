@@ -8,7 +8,7 @@
 		<Authors>Thomas Galliker</Authors>
 		<TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
 		<AssemblyName>PushNotifications</AssemblyName>
-		<PackageId>PushNotifications</PackageId>
+		<PackageId>PushNotifications.NET</PackageId>
 		<PackageTags>APNS;GCM;FCM;PushNotifications;push;notification</PackageTags>
 		<PackageIconUrl>https://raw.githubusercontent.com/thomasgalliker/PushNotifications/develop/logo.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/thomasgalliker/PushNotifications</PackageProjectUrl>
