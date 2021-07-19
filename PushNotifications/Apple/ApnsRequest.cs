@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using PushNotifications.Abstractions;
 
 namespace PushNotifications.Apple
 {
-    public class ApplePush
+    public class ApnsRequest : PushRequest
     {
         public string Token { get; private set; }
 
@@ -19,14 +20,11 @@ namespace PushNotifications.Apple
         /// </summary>
         public int? CustomPriority { get; private set; }
 
-        
         public ApplePushAlert Alert { get; private set; }
-        
         
         public ApplePushLocalizedAlert LocalizedAlert { get; private set; }
 
         public int? Badge { get; private set; }
-
         
         public string Sound { get; private set; }
 
@@ -70,7 +68,7 @@ namespace PushNotifications.Apple
         /// </summary>
         bool sendAlertAsText;
 
-        public ApplePush(ApplePushType pushType)
+        public ApnsRequest(ApplePushType pushType)
         {
             this.Type = pushType;
         }
@@ -78,7 +76,7 @@ namespace PushNotifications.Apple
         /// <summary>
         /// Add `content-available: 1` to the payload.
         /// </summary>
-        public ApplePush AddContentAvailable()
+        public ApnsRequest AddContentAvailable()
         {
             this.IsContentAvailable = true;
             return this;
@@ -88,7 +86,7 @@ namespace PushNotifications.Apple
         /// Add `mutable-content: 1` to the payload.
         /// </summary>
         /// <returns></returns>
-        public ApplePush AddMutableContent()
+        public ApnsRequest AddMutableContent()
         {
             this.IsMutableContent = true;
             return this;
@@ -101,7 +99,7 @@ namespace PushNotifications.Apple
         /// <param name="subtitle">Alert subtitle. Can be null.</param>
         /// <param name="body">Alert body. <b>Cannot be null.</b></param>
         /// <returns></returns>
-        public ApplePush AddAlert( string title,  string subtitle, string body)
+        public ApnsRequest AddAlert( string title,  string subtitle, string body)
         {
             this.Alert = new ApplePushAlert(title, subtitle, body);
             if (title == null)
@@ -118,7 +116,7 @@ namespace PushNotifications.Apple
         /// <param name="title">Alert title. Can be null.</param>
         /// <param name="body">Alert body. <b>Cannot be null.</b></param>
         /// <returns></returns>
-        public ApplePush AddAlert( string title, string body)
+        public ApnsRequest AddAlert( string title, string body)
         {
             this.Alert = new ApplePushAlert(title, body);
             if (title == null)
@@ -134,7 +132,7 @@ namespace PushNotifications.Apple
         /// </summary>
         /// <param name="body">Alert body. <b>Cannot be null.</b></param>
         /// <returns></returns>
-        public ApplePush AddAlert(string body)
+        public ApnsRequest AddAlert(string body)
         {
             return this.AddAlert(null, body);
         }
@@ -148,7 +146,7 @@ namespace PushNotifications.Apple
         /// <param name="tittleLocArgs">Variable string values to appear in place of the format specifiers in title-loc-key. Can be null.</param>
         /// <param name="actionLocKey">The string is used as a key to get a localized string in the current localization to use for the right button’s title instead of “View". Can be null.</param>
         /// <returns></returns>
-        public ApplePush AddLocalizedAlert( string titleLocKey,  string[] tittleLocArgs, string locKey, string[] locArgs,  string actionLocKey)
+        public ApnsRequest AddLocalizedAlert( string titleLocKey,  string[] tittleLocArgs, string locKey, string[] locArgs,  string actionLocKey)
         {
             this.LocalizedAlert = new ApplePushLocalizedAlert(titleLocKey, tittleLocArgs, locKey, locArgs, actionLocKey);
             return this;
@@ -160,12 +158,12 @@ namespace PushNotifications.Apple
         /// <param name="locKey">Key to an alert-message string in a Localizable.strings file for the current localization. <b>Cannot be null.</b></param>
         /// <param name="locArgs">Variable string values to appear in place of the format specifiers in loc-key. <b>Cannot be null.</b></param>
         /// <returns></returns>
-        public ApplePush AddLocalizedAlert(string locKey, string[] locArgs)
+        public ApnsRequest AddLocalizedAlert(string locKey, string[] locArgs)
         {
             return this.AddLocalizedAlert(null, null, locKey, locArgs, null);
         }
 
-        public ApplePush SetPriority(int priority)
+        public ApnsRequest SetPriority(int priority)
         {
             if(priority < 0 || priority > 10)
             {
@@ -176,7 +174,7 @@ namespace PushNotifications.Apple
             return this;
         }
 
-        public ApplePush AddBadge(int badge)
+        public ApnsRequest AddBadge(int badge)
         {
             this.IsContentAvailableGuard();
             if (this.Badge != null)
@@ -188,7 +186,7 @@ namespace PushNotifications.Apple
             return this;
         }
 
-        public ApplePush AddSound(string sound = "default")
+        public ApnsRequest AddSound(string sound = "default")
         {
             if (string.IsNullOrWhiteSpace(sound))
             {
@@ -205,7 +203,7 @@ namespace PushNotifications.Apple
             return this;
         }
 
-        public ApplePush AddCategory(string category)
+        public ApnsRequest AddCategory(string category)
         {
             if (string.IsNullOrWhiteSpace(category))
             {
@@ -226,7 +224,7 @@ namespace PushNotifications.Apple
         /// </summary>
         /// <param name="expirationDate">The date at which the notification is no longer valid.</param>
         /// 
-        public ApplePush AddExpiration(DateTimeOffset expirationDate)
+        public ApnsRequest AddExpiration(DateTimeOffset expirationDate)
         {
             this.Expiration = expirationDate;
             return this;
@@ -236,13 +234,13 @@ namespace PushNotifications.Apple
         /// APNs attempts to deliver the notification only once and doesn’t store it.
         /// </summary>
         /// <seealso cref="AddExpiration"/>
-        public ApplePush AddImmediateExpiration()
+        public ApnsRequest AddImmediateExpiration()
         {
             this.Expiration = DateTimeOffset.MinValue;
             return this;
         }
 
-        public ApplePush AddToken(string token)
+        public ApnsRequest AddToken(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(token));
@@ -253,7 +251,7 @@ namespace PushNotifications.Apple
             return this;
         }
 
-        public ApplePush AddVoipToken(string voipToken)
+        public ApnsRequest AddVoipToken(string voipToken)
         {
             if (string.IsNullOrWhiteSpace(voipToken))
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(voipToken));
@@ -271,7 +269,7 @@ namespace PushNotifications.Apple
         /// <param name="value"></param>
         /// <param name="addToApsDict">If <b>true</b>, property will be added to the <i>aps</i> dictionary, otherwise to the root dictionary. Default: <b>false</b>.</param>
         /// <returns></returns>
-        public ApplePush AddCustomProperty(string key, object value, bool addToApsDict = false)
+        public ApnsRequest AddCustomProperty(string key, object value, bool addToApsDict = false)
         {
             if (addToApsDict)
             {
@@ -286,7 +284,7 @@ namespace PushNotifications.Apple
             return this;
         }
 
-        public ApplePush AddCollapseId(string collapseId)
+        public ApnsRequest AddCollapseId(string collapseId)
         {
             if (string.IsNullOrEmpty(collapseId))
                 throw new ArgumentException($"'{nameof(collapseId)}' cannot be null or empty", nameof(collapseId));

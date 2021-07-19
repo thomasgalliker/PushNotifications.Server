@@ -1,10 +1,8 @@
-﻿using System.Threading.Tasks;
-using PushNotifications.Apple;
+﻿using PushNotifications.Apple;
 
 namespace PushNotifications.AspNetCore
 {
-    public interface IApnsService
+    public interface IApnsService : IApnsClient
     {
-        Task<ApnsResponse> SendAsync(ApplePush push);
     }
 }

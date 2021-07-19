@@ -31,7 +31,8 @@ namespace PushNotifications.Apple
         }
 
         /// <summary>
-        /// Contents of a .p8 certificate containing a key to be used to encrypt JWT. Can include BEGIN/END headers, line breaks, etc. If specified, <see cref="CertContent"/> must be null.
+        /// Contents of a .p8 certificate containing a key to be used to encrypt JWT. Can include BEGIN/END headers, line breaks, etc.
+        /// If specified, <see cref="CertContent"/> must be null.
         /// </summary>
 
         public string CertContent
@@ -49,7 +50,8 @@ namespace PushNotifications.Apple
         }
 
         /// <summary>
-        /// The 10-character Key ID you obtained from your developer account. See <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_token-based_connection_to_apns#2943371">Reference</a>.
+        /// The 10-character Key ID you obtained from your developer account.
+        /// See <a href="https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/establishing_a_token-based_connection_to_apns#2943371">Reference</a>.
         /// </summary>
         public string KeyId
         {

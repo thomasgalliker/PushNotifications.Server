@@ -46,7 +46,7 @@ namespace PushNotifications.ConsoleSample
         {
             IApnsClient apnsClient = new ApnsClient(new HttpClient(), options);
 
-            var push = new ApplePush(ApplePushType.Alert)
+            var push = new ApnsRequest(ApplePushType.Alert)
                 .AddToken(token)
                 .AddAlert("Test Message", $"Message from PushNotifications.ConsoleSample @ {DateTime.Now}")
                 .AddCustomProperty("key", "value");

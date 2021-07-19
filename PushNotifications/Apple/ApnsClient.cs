@@ -11,14 +11,16 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using PushNotifications.Abstractions;
+using PushNotifications.Internals;
 using PushNotifications.Logging;
 
 namespace PushNotifications.Apple
 {
-    public class ApnsClient : IApnsClient
+    public partial class ApnsClient : IApnsClient
     {
-        internal const string DevelopmentEndpoint = "https://api.development.push.apple.com";
-        internal const string ProductionEndpoint = "https://api.push.apple.com";
+        internal const string DevelopmentEndpoint = "https://api.development.push.apple.com";   // --> Sandbox
+        internal const string ProductionEndpoint = "https://api.push.apple.com";                // --> Production
         private const string bundleIdVoipSuffix = ".voip";
 
         private readonly HttpClient httpClient;
@@ -36,25 +38,79 @@ namespace PushNotifications.Apple
         private bool useSandbox;
         private bool useBackupPort;
 
-        public ApnsClient(HttpClient httpClient, X509Certificate cert)
+        /// <summary>
+        /// Constructs a client instance with given <paramref name="options"/>
+        /// for token-based authentication (using a .p8 certificate).
+        /// </summary>
+        private ApnsClient(HttpClient httpClient)
         {
-            if (httpClient == null)
+            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+
+            this.httpClient.DefaultRequestHeaders.UserAgent.Clear();
+            this.httpClient.DefaultRequestHeaders.UserAgent.Add(HttpClientUtils.GetProductInfo(this));
+        }
+
+        public ApnsClient(HttpClient httpClient, ApnsJwtOptions options) : this(httpClient)
+        {
+            if (options == null)
             {
-                throw new ArgumentNullException(nameof(httpClient));
+                throw new ArgumentNullException(nameof(options));
             }
 
+            string certContent;
+            if (options.CertFilePath != null)
+            {
+                certContent = File.ReadAllText(options.CertFilePath);
+            }
+            else if (options.CertContent != null)
+            {
+                certContent = options.CertContent;
+            }
+            else
+            {
+                throw new ArgumentException("Either certificate file path or certificate contents must be provided.", nameof(options));
+            }
+
+            certContent = certContent
+                .Replace("\r", "")
+                .Replace("\n", "")
+                .Replace("-----BEGIN PRIVATE KEY-----", "")
+                .Replace("-----END PRIVATE KEY-----", "");
+
+            var key = CngKey.Import(Convert.FromBase64String(certContent), CngKeyBlobFormat.Pkcs8PrivateBlob);
+
+            this.key = key ?? throw new ArgumentNullException(nameof(key));
+
+            this.keyId = options.KeyId ?? throw new ArgumentNullException(nameof(options.KeyId),
+                $"Make sure {nameof(ApnsJwtOptions)}.{nameof(options.KeyId)} is set to a non-null value.");
+
+            this.teamId = options.TeamId ?? throw new ArgumentNullException(nameof(options.TeamId),
+                $"Make sure {nameof(ApnsJwtOptions)}.{nameof(options.TeamId)} is set to a non-null value.");
+
+            this.bundleId = options.BundleId ?? throw new ArgumentNullException(nameof(options.BundleId),
+                $"Make sure {nameof(ApnsJwtOptions)}.{nameof(options.BundleId)} is set to a non-null value.");
+
+            this.useSandbox = options.UseSandbox;
+        }
+
+        /// <summary>
+        /// Constructs a client instance with given <paramref name="cert"/>
+        /// for certificate-based authentication (using a .p12 certificate).
+        /// </summary>
+        public ApnsClient(HttpClient httpClient, X509Certificate cert) : this(httpClient)
+        {
             if (cert == null)
             {
                 throw new ArgumentNullException(nameof(cert));
             }
 
-            this.httpClient = httpClient;
             var split = cert.Subject.Split(new[] { "0.9.2342.19200300.100.1.1=" }, StringSplitOptions.RemoveEmptyEntries);
             if (split.Length != 2)
             {
                 // On Linux .NET Core cert.Subject prints `userId=xxx` instead of `0.9.2342.19200300.100.1.1=xxx`
                 split = cert.Subject.Split(new[] { "userId=" }, StringSplitOptions.RemoveEmptyEntries);
             }
+
             if (split.Length != 2)
             {
                 // if subject prints `uid=xxx` instead of `0.9.2342.19200300.100.1.1=xxx`
@@ -62,15 +118,17 @@ namespace PushNotifications.Apple
             }
 
             if (split.Length != 2)
+            {
                 throw new InvalidOperationException("Provided certificate does not appear to be a valid APNs certificate.");
+            }
 
-            string topic = split[1];
+            var topic = split[1];
             this.isVoipCert = topic.EndsWith(bundleIdVoipSuffix);
             this.bundleId = split[1].Replace(bundleIdVoipSuffix, "");
             this.useCert = true;
         }
 
-        public async Task<ApnsResponse> SendAsync(ApplePush push, CancellationToken ct = default)
+        public async Task<ApnsResponse> SendAsync(ApnsRequest push, CancellationToken ct = default)
         {
             Logger.Debug($"SendAsync to Token={push.Token} started...");
 
@@ -158,51 +216,6 @@ namespace PushNotifications.Apple
             }
 
             return ApnsResponse.Error(errorPayload.Reason, errorPayload.ReasonRaw);
-        }
-
-        public ApnsClient(HttpClient httpClient, ApnsJwtOptions options)
-        {
-            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
-
-            if (options == null)
-            {
-                throw new ArgumentNullException(nameof(options));
-            }
-
-            string certContent;
-            if (options.CertFilePath != null)
-            {
-                certContent = File.ReadAllText(options.CertFilePath);
-            }
-            else if (options.CertContent != null)
-            {
-                certContent = options.CertContent;
-            }
-            else
-            {
-                throw new ArgumentException("Either certificate file path or certificate contents must be provided.", nameof(options));
-            }
-
-            certContent = certContent
-                .Replace("\r", "")
-                .Replace("\n", "")
-                .Replace("-----BEGIN PRIVATE KEY-----", "")
-                .Replace("-----END PRIVATE KEY-----", "");
-
-            var key = CngKey.Import(Convert.FromBase64String(certContent), CngKeyBlobFormat.Pkcs8PrivateBlob);
-
-            this.key = key ?? throw new ArgumentNullException(nameof(key));
-
-            this.keyId = options.KeyId ?? throw new ArgumentNullException(nameof(options.KeyId),
-                $"Make sure {nameof(ApnsJwtOptions)}.{nameof(options.KeyId)} is set to a non-null value.");
-
-            this.teamId = options.TeamId ?? throw new ArgumentNullException(nameof(options.TeamId),
-                $"Make sure {nameof(ApnsJwtOptions)}.{nameof(options.TeamId)} is set to a non-null value.");
-
-            this.bundleId = options.BundleId ?? throw new ArgumentNullException(nameof(options.BundleId),
-                $"Make sure {nameof(ApnsJwtOptions)}.{nameof(options.BundleId)} is set to a non-null value.");
-
-            this.useSandbox = options.UseSandbox;
         }
 
         public static ApnsClient CreateUsingCert(X509Certificate2 cert)

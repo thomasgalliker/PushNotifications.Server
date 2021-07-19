@@ -3,25 +3,25 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using PushNotifications.Apple;
+using PushNotifications.Google;
 
 namespace PushNotifications.AspNetCore
 {
-    public class ApnsService : IApnsService
+    public class FcmService : IFcmService
     {
-        private readonly IApnsClient client;
+        private readonly IFcmClient client;
 
-        public ApnsService(IHttpClientFactory httpClientFactory, IOptions<PushNotificationsOptions> options)
+        public FcmService(IHttpClientFactory httpClientFactory, IOptions<PushNotificationsOptions> options)
         {
             var pushNotificationsOptions = options.Value;
 
-            if (pushNotificationsOptions.ApnsJwtOptions is ApnsJwtOptions apnsJwtOptions)
+            if (pushNotificationsOptions.FcmConfiguration is FcmConfiguration fcmConfiguration)
             {
                 var httpClient = httpClientFactory.CreateClient(pushNotificationsOptions.DisableServerCertificateValidation 
                     ? "httpClient_PushNotifications_DisableCerverCertValidation" 
                     : "httpClient_PushNotifications");
 
-                this.client = new ApnsClient(httpClient, apnsJwtOptions);
+                this.client = new FcmClient(httpClient, fcmConfiguration);
             }
             else
             {
@@ -29,7 +29,7 @@ namespace PushNotifications.AspNetCore
             }
         }
 
-        public Task<ApnsResponse> SendAsync(ApnsRequest push, CancellationToken ct = default)
+        public Task<FcmResponse> SendAsync(FcmRequest push, CancellationToken ct = default)
         {
             return this.client.SendAsync(push);
         }

@@ -2,11 +2,11 @@
 using System.Text;
 using Newtonsoft.Json;
 
-namespace PushNotifications.Apple
+namespace PushNotifications.Internals
 {
-    public class JsonContent : StringContent
+    internal class JsonContent : StringContent
     {
-        const string JsonMediaType = "application/json";
+        private const string JsonMediaType = "application/json";
 
         public JsonContent(object obj) : this(obj is string str ? str : JsonConvert.SerializeObject(obj, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }))
         {

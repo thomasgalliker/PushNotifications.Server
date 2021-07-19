@@ -1,8 +1,9 @@
 ﻿using Newtonsoft.Json;
+using PushNotifications.Abstractions;
 
 namespace PushNotifications.Apple
 {
-    public class ApnsResponse
+    public class ApnsResponse : PushResponse
     {
         public ApnsResponseReason Reason { get; }
 

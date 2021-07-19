@@ -23,8 +23,8 @@ namespace PushNotifications.AspNetCoreSample
             services.AddControllers();
 
             services.AddOptions();
-            services.Configure<ApnsJwtOptions>(this.Configuration.GetSection("PushNotification:iOS"));
-            services.AddPushNotifications(o => o.DisableServerCertificateValidation = true);
+            services.Configure<PushNotificationsOptions>(this.Configuration.GetSection("PushNotifications"));
+            services.AddPushNotifications();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

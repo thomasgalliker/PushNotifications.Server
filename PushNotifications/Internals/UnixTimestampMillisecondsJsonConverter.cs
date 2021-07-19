@@ -1,9 +1,9 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace PushNotifications.Apple
+namespace PushNotifications.Internals
 {
-    public class UnixTimestampMillisecondsJsonConverter : JsonConverter<DateTimeOffset>
+    internal class UnixTimestampMillisecondsJsonConverter : JsonConverter<DateTimeOffset>
     {
         public override DateTimeOffset ReadJson(JsonReader reader, Type objectType, DateTimeOffset existingValue, bool hasExistingValue, JsonSerializer serializer)
         {

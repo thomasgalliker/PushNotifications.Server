@@ -4,11 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace PushNotifications.AspNetCore
 {
-    public static class AspNetCoreExtensions
+    public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection AddPushNotifications(this IServiceCollection services, Action<ApnsServiceOptions> configureApns = null)
+        public static IServiceCollection AddPushNotifications(this IServiceCollection services, Action<PushNotificationsOptions> configureApns = null)
         {
-            var optionsBuilder = services.AddOptions<ApnsServiceOptions>();
+            var optionsBuilder = services.AddOptions<PushNotificationsOptions>();
             if (configureApns != null)
             {
                 optionsBuilder.Configure(configureApns);
@@ -20,8 +20,8 @@ namespace PushNotifications.AspNetCore
                 {
                     ServerCertificateCustomValidationCallback = (m, x, c, s) => true
                 });
-            services.AddSingleton<IApnsClientFactory, ApnsClientFactory>();
             services.AddSingleton<IApnsService, ApnsService>();
+            services.AddSingleton<IFcmService, FcmService>();
             return services;
         }
     }
