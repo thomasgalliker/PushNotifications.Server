@@ -1,4 +1,4 @@
-﻿namespace PushNotifications.Abstractions
+﻿namespace PushNotifications
 {
     public interface IPushResponse
     {

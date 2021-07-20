@@ -20,8 +20,11 @@ namespace PushNotifications.AspNetCore
                 {
                     ServerCertificateCustomValidationCallback = (m, x, c, s) => true
                 });
+
             services.AddSingleton<IApnsService, ApnsService>();
             services.AddSingleton<IFcmService, FcmService>();
+            services.AddSingleton<IPushNotificationService, PushNotificationService>();
+
             return services;
         }
     }

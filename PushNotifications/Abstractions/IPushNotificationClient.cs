@@ -1,9 +1,9 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 
-namespace PushNotifications.Abstractions
+namespace PushNotifications
 {
-    public interface IPushClient
+    public interface IPushNotificationClient
     {
         Task<IPushResponse> SendAsync(IPushRequest push, CancellationToken ct = default);
     }

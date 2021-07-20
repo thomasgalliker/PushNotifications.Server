@@ -8,7 +8,7 @@ namespace PushNotifications
     {
         public static readonly RuntimePlatform Android = new RuntimePlatform("Android");
         public static readonly RuntimePlatform iOS = new RuntimePlatform("iOS");
-        public static readonly RuntimePlatform UWP = new RuntimePlatform("UWP");
+        //public static readonly RuntimePlatform UWP = new RuntimePlatform("UWP");
 
         private readonly string value;
 

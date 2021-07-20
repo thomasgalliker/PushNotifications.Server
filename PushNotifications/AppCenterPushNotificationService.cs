@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace PushNotifications
 {
-    public class AppCenterPushNotificationService : IPushNotificationService
+    public class AppCenterPushNotificationService
     {
         private readonly ILogger logger;
         private readonly HttpClient httpClient;
