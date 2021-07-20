@@ -1,10 +1,7 @@
 ﻿namespace PushNotifications.Abstractions
 {
-    public class PushResponse
-    {
-    }
     public interface IPushResponse
     {
-
+        public bool IsSuccessful { get; }
     }
 }

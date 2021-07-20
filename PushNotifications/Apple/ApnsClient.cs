@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PushNotifications.Abstractions;
 using PushNotifications.Internals;
 using PushNotifications.Logging;
 
@@ -128,47 +127,45 @@ namespace PushNotifications.Apple
             this.useCert = true;
         }
 
-        public async Task<ApnsResponse> SendAsync(ApnsRequest push, CancellationToken ct = default)
+        public async Task<ApnsResponse> SendAsync(ApnsRequest apnsRequest, CancellationToken ct = default)
         {
-            Logger.Debug($"SendAsync to Token={push.Token} started...");
+            Logger.Debug($"SendAsync to Token={apnsRequest.Token} started...");
 
             if (this.useCert)
             {
-                if (this.isVoipCert && push.Type != ApplePushType.Voip)
+                if (this.isVoipCert && apnsRequest.Type != ApplePushType.Voip)
                 {
                     throw new InvalidOperationException("Provided certificate can only be used to send 'voip' type pushes.");
                 }
             }
 
-            var payload = push.GeneratePayload();
+            var payload = apnsRequest.GeneratePayload();
 
+            var token = (apnsRequest.Token ?? apnsRequest.VoipToken);
             string url = (this.useSandbox ? DevelopmentEndpoint : ProductionEndpoint)
                 + (this.useBackupPort ? ":2197" : ":443")
                 + "/3/device/"
-                + (push.Token ?? push.VoipToken);
+                + token;
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             request.Version = new Version(2, 0);
-            request.Headers.Add("apns-priority", push.Priority.ToString());
-            request.Headers.Add("apns-push-type", push.Type.ToString().ToLowerInvariant());
-            request.Headers.Add("apns-topic", this.GetTopic(push.Type));
+            request.Headers.Add("apns-priority", apnsRequest.Priority.ToString());
+            request.Headers.Add("apns-push-type", apnsRequest.Type.ToString().ToLowerInvariant());
+            request.Headers.Add("apns-topic", this.GetTopic(apnsRequest.Type));
 
             if (!this.useCert)
             {
                 request.Headers.Authorization = new AuthenticationHeaderValue("bearer", this.GetOrGenerateJwt());
             }
 
-            if (push.Expiration.HasValue)
+            if (apnsRequest.Expiration is DateTimeOffset expiration)
             {
-                var exp = push.Expiration.Value;
-                if (exp == DateTimeOffset.MinValue)
-                    request.Headers.Add("apns-expiration", "0");
-                else
-                    request.Headers.Add("apns-expiration", exp.ToUnixTimeSeconds().ToString());
+                var expirationValue = expiration == DateTimeOffset.MinValue ? 0L : expiration.ToUnixTimeSeconds();
+                request.Headers.Add("apns-expiration", $"{expirationValue}");
             }
 
-            if (!string.IsNullOrEmpty(push.CollapseId))
+            if (!string.IsNullOrEmpty(apnsRequest.CollapseId))
             {
-                request.Headers.Add("apns-collapse-id", push.CollapseId);
+                request.Headers.Add("apns-collapse-id", apnsRequest.CollapseId);
             }
 
             request.Content = new JsonContent(payload);
@@ -187,15 +184,15 @@ namespace PushNotifications.Apple
                 throw new ApnsCertificateExpiredException(ex);
             }
 
-            var contentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            var responseContentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            Logger.Debug($"SendAsync returned json content:{Environment.NewLine}{responseContentJson}");
 
             // Process status codes specified by APNs documentation
             // https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/handling_notification_responses_from_apns
-            var statusCode = response.StatusCode;
-            if (statusCode == HttpStatusCode.OK)
+            if (response.StatusCode == HttpStatusCode.OK)
             {
-                Logger.Info($"SendAsync to Token={push.Token} successfully completed");
-                return ApnsResponse.Successful;
+                Logger.Info($"SendAsync to Token={apnsRequest.Token} successfully completed");
+                return ApnsResponse.Successful();
             }
 
             // something went wrong
@@ -206,16 +203,16 @@ namespace PushNotifications.Apple
             ApnsErrorResponsePayload errorPayload;
             try
             {
-                errorPayload = JsonConvert.DeserializeObject<ApnsErrorResponsePayload>(contentJson);
-                Logger.Error($"SendAsync to Token={push.Token} failed with StatusCode={response.StatusCode}, Reason={errorPayload.Reason}");
+                errorPayload = JsonConvert.DeserializeObject<ApnsErrorResponsePayload>(responseContentJson);
+                Logger.Error($"SendAsync to Token={apnsRequest.Token} failed with StatusCode={response.StatusCode}, Reason={errorPayload.Reason}");
             }
             catch (Exception ex)
             {
-                Logger.Error($"SendAsync to Token={push.Token} failed with StatusCode={response.StatusCode}, Content={contentJson}", ex);
-                return ApnsResponse.Error(ApnsResponseReason.Unknown, $"Status: {statusCode} ({(int)statusCode}), reason: {contentJson ?? "not specified"}.");
+                Logger.Error($"SendAsync to Token={apnsRequest.Token} failed with StatusCode={response.StatusCode}, Content={responseContentJson}", ex);
+                throw;
             }
 
-            return ApnsResponse.Error(errorPayload.Reason, errorPayload.ReasonRaw);
+            return ApnsResponse.Error(errorPayload.Reason);
         }
 
         public static ApnsClient CreateUsingCert(X509Certificate2 cert)

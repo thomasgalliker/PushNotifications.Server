@@ -4,56 +4,25 @@ namespace PushNotifications.Google
 {
     public class FcmMessageResult
     {
+        /// <summary>
+        /// The topic message ID when FCM has successfully received the request
+        /// and will attempt to deliver to all subscribed devices.
+        /// </summary>
         [JsonProperty("message_id", NullValueHandling = NullValueHandling.Ignore)]
         public string MessageId { get; set; }
 
-        [JsonProperty("registration_id", NullValueHandling = NullValueHandling.Ignore)]
-        public string CanonicalRegistrationId { get; set; }
-
+        /// <summary>
+        /// The registration ID (<seealso cref="FcmRequest.To"/> or <seealso cref="FcmRequest.RegistrationIds"/>)
+        /// of the original request to which this result maps.
+        /// </summary>
         [JsonIgnore]
-        public FcmResponseStatus ResponseStatus { get; set; }
+        public string RegistrationId { get; set; }
 
+        /// <summary>
+        /// Error that occurred when processing the message.
+        /// The possible values can be found in <seealso cref="FcmResponseStatus"/>.
+        /// </summary>
         [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
-        public string Error
-        {
-            get 
-            {
-                switch (this.ResponseStatus)
-                {
-                case FcmResponseStatus.Ok:
-                    return null;
-                case FcmResponseStatus.Unavailable:
-                    return "Unavailable";
-                case FcmResponseStatus.QuotaExceeded:
-                    return "QuotaExceeded";
-                case FcmResponseStatus.NotRegistered:
-                    return "NotRegistered";
-                case FcmResponseStatus.MissingRegistrationId:
-                    return "MissingRegistration";
-                case FcmResponseStatus.MissingCollapseKey:
-                    return "MissingCollapseKey";
-                case FcmResponseStatus.MismatchSenderId:
-                    return "MismatchSenderId";
-                case FcmResponseStatus.MessageTooBig:
-                    return "MessageTooBig";
-                case FcmResponseStatus.InvalidTtl:
-                    return "InvalidTtl";
-                case FcmResponseStatus.InvalidRegistration:
-                    return "InvalidRegistration";
-                case FcmResponseStatus.InvalidDataKey:
-                    return "InvalidDataKey";
-                case FcmResponseStatus.InternalServerError:
-                    return "InternalServerError";
-                case FcmResponseStatus.DeviceQuotaExceeded:
-                    return null;
-                case FcmResponseStatus.CanonicalRegistrationId:
-                    return null;
-                case FcmResponseStatus.Error:
-                    return "Error";
-                default:
-                    return null;
-                }
-            }
-        }
+        public FcmResponseStatus Error { get; set; }
     }
 }

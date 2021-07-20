@@ -69,7 +69,7 @@ namespace PushNotifications
                 return false;
             }
 
-            return Equals((RuntimePlatform)obj);
+            return this.Equals((RuntimePlatform)obj);
         }
 
         public override int GetHashCode()

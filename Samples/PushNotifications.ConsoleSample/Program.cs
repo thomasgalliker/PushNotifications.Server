@@ -58,7 +58,7 @@ namespace PushNotifications.ConsoleSample
             }
             else
             {
-                Console.WriteLine($"Failed to send push notification to device {token}: {response.ReasonString}");
+                Console.WriteLine($"Failed to send push notification to device {token}: {response.Reason}");
             }
         }
 

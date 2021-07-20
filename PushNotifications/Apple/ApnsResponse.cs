@@ -3,24 +3,29 @@ using PushNotifications.Abstractions;
 
 namespace PushNotifications.Apple
 {
-    public class ApnsResponse : PushResponse
+    [JsonObject]
+    public class ApnsResponse : IPushResponse
     {
+        [JsonProperty("reason")]
         public ApnsResponseReason Reason { get; }
 
-        public string ReasonString { get; }
-
+        [JsonProperty("success")]
         public bool IsSuccessful { get; }
 
-        [JsonConstructor]
-        ApnsResponse(ApnsResponseReason reason, string reasonString, bool isSuccessful)
+        private ApnsResponse(ApnsResponseReason reason, bool isSuccessful)
         {
             this.Reason = reason;
-            this.ReasonString = reasonString;
             this.IsSuccessful = isSuccessful;
         }
 
-        public static readonly ApnsResponse Successful = new ApnsResponse(ApnsResponseReason.Success, null, true);
+        internal static ApnsResponse Successful()
+        {
+            return new ApnsResponse(null, true);
+        }
 
-        public static ApnsResponse Error(ApnsResponseReason reason, string reasonString) => new ApnsResponse(reason, reasonString, false);
+        internal static ApnsResponse Error(ApnsResponseReason reason)
+        {
+            return new ApnsResponse(reason, false);
+        }
     }
 }

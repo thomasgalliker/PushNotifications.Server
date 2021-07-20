@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using PushNotifications.Apple;
 using PushNotifications.AspNetCore;
 using PushNotifications.Google;
@@ -59,7 +58,7 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                 }
                 else
                 {
-                    this.logger.LogInformation($"Failed to send push notification to device {token}: {response.ReasonString}");
+                    this.logger.LogInformation($"Failed to send push notification to device {token}: {response.Reason}");
                 }
             }
 
@@ -77,8 +76,8 @@ namespace PushNotifications.AspNetCoreSample.Controllers
             {
                 var request = new FcmRequest()
                 {
-                    //To = token,
-                    RegistrationIds = new List<string> { token },
+                    To = token,
+                    //RegistrationIds = pushDevices.ToList(),
                     Notification = new FcmNotification
                     {
                         Title = "Test Message",
@@ -93,14 +92,14 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                 var response = await this.fcmService.SendAsync(request);
                 responses.Add(response);
 
-                //if (response.IsSuccessful)
-                //{
-                //    this.logger.LogInformation($"Successfully sent push notification to device {token}");
-                //}
-                //else
-                //{
-                //    this.logger.LogInformation($"Failed to send push notification to device {token}: {response.ReasonString}");
-                //}
+                if (response.IsSuccessful)
+                {
+                    this.logger.LogInformation($"Successfully sent push notification to device {token}");
+                }
+                else
+                {
+                    this.logger.LogInformation($"Failed to send push notification to device {token}: {response.Results[0].Error}");
+                }
             }
 
             return responses;

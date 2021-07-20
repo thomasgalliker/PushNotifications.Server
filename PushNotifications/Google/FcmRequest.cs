@@ -1,49 +1,12 @@
 using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using PushNotifications.Abstractions;
 
 namespace PushNotifications.Google
 {
     public class FcmRequest : INotification
     {
-        public static FcmRequest ForSingleResult(FcmResponse response, int resultIndex)
-        {
-            var result = new FcmRequest();
-            result.Tag = response.OriginalNotification.Tag;
-            result.MessageId = response.OriginalNotification.MessageId;
-
-            if (response.OriginalNotification.RegistrationIds != null && response.OriginalNotification.RegistrationIds.Count >= (resultIndex + 1))
-                result.RegistrationIds.Add(response.OriginalNotification.RegistrationIds[resultIndex]);
-
-            result.CollapseKey = response.OriginalNotification.CollapseKey;
-            result.Data = response.OriginalNotification.Data;
-            result.DelayWhileIdle = response.OriginalNotification.DelayWhileIdle;
-            result.ContentAvailable = response.OriginalNotification.ContentAvailable;
-            result.DryRun = response.OriginalNotification.DryRun;
-            result.Priority = response.OriginalNotification.Priority;
-            result.To = response.OriginalNotification.To;
-
-            return result;
-        }
-
-        public static FcmRequest ForSingleRegistrationId(FcmRequest msg, string registrationId)
-        {
-            var result = new FcmRequest();
-            result.Tag = msg.Tag;
-            result.MessageId = msg.MessageId;
-            result.RegistrationIds.Add(registrationId);
-            result.To = null;
-            result.CollapseKey = msg.CollapseKey;
-            result.Data = msg.Data;
-            result.DelayWhileIdle = msg.DelayWhileIdle;
-            result.ContentAvailable = msg.ContentAvailable;
-            result.DryRun = msg.DryRun;
-            result.Priority = msg.Priority;
-
-            return result;
-        }
-
         public FcmRequest()
         {
             this.RegistrationIds = new List<string>();
@@ -51,9 +14,6 @@ namespace PushNotifications.Google
             this.Data = null;
             this.DelayWhileIdle = null;
         }
-
-        [JsonIgnore]
-        public object Tag { get; set; }
 
         [JsonProperty("message_id")]
         public string MessageId { get; internal set; }
@@ -152,7 +112,8 @@ namespace PushNotifications.Google
         /// When a message is sent with high priority, it is sent immediately, and the app can wake a sleeping device and 
         /// open a network connection to your server.
         /// </summary>
-        [JsonProperty("priority"), JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        [JsonProperty("priority")]
+        [JsonConverter(typeof(StringEnumConverter))]
         public FcmNotificationPriority? Priority { get; set; }
     }
 }

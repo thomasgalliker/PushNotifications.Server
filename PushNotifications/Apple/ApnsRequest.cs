@@ -5,7 +5,7 @@ using PushNotifications.Abstractions;
 
 namespace PushNotifications.Apple
 {
-    public class ApnsRequest : PushRequest
+    public class ApnsRequest : IPushRequest
     {
         public string Token { get; private set; }
 

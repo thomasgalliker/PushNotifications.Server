@@ -4,31 +4,23 @@ using PushNotifications.Internals;
 
 namespace PushNotifications.Apple
 {
+    /// <summary>
+    /// Source: https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/handling_notification_responses_from_apns
+    /// </summary>
     public class ApnsErrorResponsePayload
     {
-        private string reasonRaw;
+        /// <summary>
+        /// The error code indicating the reason for the failure.
+        /// For a list of possible values, see <seealso cref="ApnsResponseReason"/>.
+        /// </summary>
+        [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
+        public ApnsResponseReason Reason { get; set; }
 
-        [JsonIgnore]
-        public ApnsResponseReason Reason
-        {
-            get; private set;
-        }
-
-        [JsonProperty("reason")]
-        public string ReasonRaw
-        {
-            get => this.reasonRaw;
-            set
-            {
-                if (this.reasonRaw != value)
-                {
-                    this.reasonRaw = value;
-                    this.Reason = Enum.TryParse<ApnsResponseReason>(this.ReasonRaw, out var enumValue) ? enumValue : ApnsResponseReason.Unknown;
-                }
-            }
-        }
-
-        [JsonConverter(typeof(UnixTimestampMillisecondsJsonConverter))] // timestamp is in milliseconds (https://openradar.appspot.com/24548417)
+        /// <summary>
+        /// The time at which APNs confirmed the token was no longer valid for the topic.
+        /// This key is included only when the error in the :status field is 410.
+        /// </summary>
+        [JsonConverter(typeof(UnixTimestampMillisecondsJsonConverter))]
         public DateTimeOffset? Timestamp { get; set; }
     }
 }
