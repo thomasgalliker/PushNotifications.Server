@@ -4,17 +4,17 @@ namespace PushNotifications.Abstractions
 {
     public class NotificationException : Exception
     {
-        public NotificationException (string message, INotification notification) : base (message)
+        public NotificationException (string message, IPushRequest notification) : base (message)
         {
             this.Notification = notification;
         }
 
-        public NotificationException (string message, INotification notification, Exception innerException)
+        public NotificationException (string message, IPushRequest notification, Exception innerException)
             : base (message, innerException)
         {
             this.Notification = notification;
         }
 
-        public INotification Notification { get; set; }
+        public IPushRequest Notification { get; set; }
     }
 }

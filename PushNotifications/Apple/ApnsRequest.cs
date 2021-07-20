@@ -243,10 +243,17 @@ namespace PushNotifications.Apple
         public ApnsRequest AddToken(string token)
         {
             if (string.IsNullOrWhiteSpace(token))
+            {
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(token));
+            }
+
             this.EnsureTokensNotExistGuard();
+
             if (this.Type == ApplePushType.Voip)
+            {
                 throw new InvalidOperationException($"Please use AddVoipToken() when sending {nameof(ApplePushType.Voip)} pushes.");
+            }
+
             this.Token = token;
             return this;
         }
@@ -254,10 +261,17 @@ namespace PushNotifications.Apple
         public ApnsRequest AddVoipToken(string voipToken)
         {
             if (string.IsNullOrWhiteSpace(voipToken))
+            {
                 throw new ArgumentException("Value cannot be null or whitespace.", nameof(voipToken));
+            }
+
             this.EnsureTokensNotExistGuard();
+         
             if(this.Type != ApplePushType.Voip)
+            {
                 throw new InvalidOperationException($"VoIP token may only be used with {nameof(ApplePushType.Voip)} pushes.");
+            }
+
             this.VoipToken = voipToken;
             return this;
         }
@@ -287,23 +301,33 @@ namespace PushNotifications.Apple
         public ApnsRequest AddCollapseId(string collapseId)
         {
             if (string.IsNullOrEmpty(collapseId))
+            {
                 throw new ArgumentException($"'{nameof(collapseId)}' cannot be null or empty", nameof(collapseId));
+            }
+
             if (!string.IsNullOrEmpty(this.CollapseId))
+            {
                 throw new InvalidOperationException($"{nameof(this.CollapseId)} is already added.");
+            }
+
             this.CollapseId = collapseId;
             return this;
         }
 
-        void EnsureTokensNotExistGuard()
+        private void EnsureTokensNotExistGuard()
         {
             if (!(string.IsNullOrEmpty(this.Token) && string.IsNullOrEmpty(this.VoipToken)))
+            {
                 throw new InvalidOperationException("Notification already has token");
+            }
         }
 
-        void IsContentAvailableGuard()
+        private void IsContentAvailableGuard()
         {
             if (this.IsContentAvailable)
+            {
                 throw new InvalidOperationException("Cannot add fields to a push with content-available");
+            }
         }
 
         public object GeneratePayload()

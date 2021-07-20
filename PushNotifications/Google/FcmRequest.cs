@@ -5,7 +5,7 @@ using PushNotifications.Abstractions;
 
 namespace PushNotifications.Google
 {
-    public class FcmRequest : INotification
+    public class FcmRequest : IPushRequest
     {
         public FcmRequest()
         {

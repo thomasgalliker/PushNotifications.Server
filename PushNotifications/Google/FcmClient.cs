@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Runtime.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -57,20 +55,10 @@ namespace PushNotifications.Google
                 Logger.Info($"SendAsync successfully completed");
                 var fcmResponse = JsonConvert.DeserializeObject<FcmResponse>(responseContentJson);
 
-                // TODO Assign registration Ids one by one
-                fcmResponse.Results.ForPair(fcmRequest.RegistrationIds ?? new List<string> { fcmRequest.To }, (x, y) => x.RegistrationId = y);
+                // Assign registration ID to each result in the list
+                fcmResponse.Results.ForPair(fcmRequest.RegistrationIds ?? new List<string> { fcmRequest.To }, (r, id) => r.RegistrationId = id);
+                
                 return fcmResponse;
-            }
-
-            // 401 bad auth token
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedAccessException("GCM authorization Failed");
-            }
-
-            if (response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                throw new FcmNotificationException(fcmRequest, "HTTP 400 Bad Request", responseContentJson);
             }
 
             if ((int)response.StatusCode >= 500 && (int)response.StatusCode < 600)
@@ -81,11 +69,11 @@ namespace PushNotifications.Google
                 if (retryAfterHeader != null && retryAfterHeader.Delta.HasValue)
                 {
                     var retryAfter = retryAfterHeader.Delta.Value;
-                    throw new RetryAfterException(fcmRequest, "GCM Requested Backoff", DateTime.UtcNow + retryAfter);
+                    throw new RetryAfterException(fcmRequest, "FCM Requested Backoff", DateTime.UtcNow + retryAfter);
                 }
             }
 
-            throw new FcmNotificationException(fcmRequest, "GCM HTTP Error: " + response.StatusCode, responseContentJson);
+            throw new FcmNotificationException(fcmRequest, "FCM HTTP Error: " + response.StatusCode, responseContentJson);
         }
     }
 }
