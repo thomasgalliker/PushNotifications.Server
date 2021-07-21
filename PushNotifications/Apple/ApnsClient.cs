@@ -195,22 +195,8 @@ namespace PushNotifications.Apple
                 return ApnsResponse.Successful(apnsRequest.Token);
             }
 
-            // something went wrong
-            // check for payload 
-            // {"reason":"DeviceTokenNotForTopic"}
-            // {"reason":"Unregistered","timestamp":1454948015990}
-
-            ApnsErrorResponsePayload errorPayload;
-            try
-            {
-                errorPayload = JsonConvert.DeserializeObject<ApnsErrorResponsePayload>(responseContentJson);
-                Logger.Error($"SendAsync to Token={apnsRequest.Token} failed with StatusCode={response.StatusCode}, Reason={errorPayload.Reason}");
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"SendAsync to Token={apnsRequest.Token} failed with StatusCode={response.StatusCode}, Content={responseContentJson}", ex);
-                throw;
-            }
+            var errorPayload = JsonConvert.DeserializeObject<ApnsErrorResponsePayload>(responseContentJson);
+            Logger.Error($"SendAsync to Token={apnsRequest.Token} failed with StatusCode={(int)response.StatusCode}({response.StatusCode}), Reason={errorPayload.Reason}");
 
             return ApnsResponse.Error(apnsRequest.Token, errorPayload.Reason);
         }

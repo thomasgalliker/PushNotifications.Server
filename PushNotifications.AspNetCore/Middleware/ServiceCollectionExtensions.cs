@@ -25,8 +25,6 @@ namespace PushNotifications.AspNetCore
 
             services.AddSingleton<IFcmClient>(s => s.GetService<IFcmClientFactory>().GetClient());
             services.AddSingleton<IApnsClient>(s => s.GetService<IApnsClientFactory>().GetClient());
-            services.AddSingleton<IApnsService, ApnsService>();
-            services.AddSingleton<IFcmService, FcmService>();
             services.AddSingleton<IPushNotificationClient, PushNotificationClient>();
             services.AddSingleton<IPushNotificationService, PushNotificationService>();
             services.AddSingleton<IApnsClientFactory, ApnsClientFactory>();

@@ -18,24 +18,24 @@ namespace PushNotifications.AspNetCoreSample.Controllers
             PushDevice.Android("dBpr37I3WlI:APA91bHqhmzZVoUd2hE9Yw-s3wDOtzexg0LkDew59q0Q1hjc2a3KN0kZu0fSZpqSIej346F69q0eKm3u0WJEgG3_AOM44E3DH-AvnHM6vjIMRora-eXKyJ7kDZ5F1lpZXfNb1B0hxmeS"),
             PushDevice.Android("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
             PushDevice.iOS("85bea18076def67319aa2345e30ca5fbce20296e2af05640cd6036c9543dbbb3"), // Token expired
-            PushDevice.iOS("0537210f8177b2cf14c3c8bd43d7f95e23319f21cf0d84327eef174c61e42fce"), // Valid Token
+            PushDevice.iOS("235857441ce4ad2fa491c48738dafb1e456cf5d76252967bd4ceb5a4ccb11777"), // Valid Token
             PushDevice.iOS("IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII"),
         };
 
         private readonly ILogger<PushNotificationController> logger;
-        private readonly IApnsService apnsService;
-        private readonly IFcmService fcmService;
+        private readonly IApnsClient apnsClient;
+        private readonly IFcmClient fcmClient;
         private readonly IPushNotificationService pushNotificationService;
 
         public PushNotificationController(
             ILogger<PushNotificationController> logger,
-            IApnsService apnsService,
-            IFcmService fcmService,
+            IApnsClient apnsService,
+            IFcmClient fcmService,
             IPushNotificationService pushNotificationService)
         {
             this.logger = logger;
-            this.apnsService = apnsService;
-            this.fcmService = fcmService;
+            this.apnsClient = apnsService;
+            this.fcmClient = fcmService;
             this.pushNotificationService = pushNotificationService;
         }
 
@@ -55,7 +55,7 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                      .AddAlert("Test Message", $"Message from PushNotifications.AspNetCoreSample @ {DateTime.Now}")
                      .AddCustomProperty("key", "value");
 
-                var response = await this.apnsService.SendAsync(request);
+                var response = await this.apnsClient.SendAsync(request);
                 responses.Add(response);
 
                 if (response.IsSuccessful)
@@ -97,7 +97,7 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                     },
                 };
 
-                var response = await this.fcmService.SendAsync(request);
+                var response = await this.fcmClient.SendAsync(request);
                 responses.Add(response);
 
                 if (response.IsSuccessful)
@@ -125,9 +125,9 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                     Title = "Test Message",
                     Body = $"Message from PushNotifications.AspNetCoreSample @ {DateTime.Now}",
                     CustomData = new Dictionary<string, string>
-                        {
-                            { "key", "value" }
-                        }
+                    {
+                        { "key", "value" }
+                    }
                 },
                 Devices = pushDevices
             };
