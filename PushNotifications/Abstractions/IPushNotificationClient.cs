@@ -5,6 +5,6 @@ namespace PushNotifications
 {
     public interface IPushNotificationClient
     {
-        Task<IPushResponse> SendAsync(IPushRequest push, CancellationToken ct = default);
+        Task<PushResponse> SendAsync(PushRequest push, CancellationToken ct = default);
     }
 }

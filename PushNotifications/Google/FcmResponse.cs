@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using PushNotifications.Abstractions;
 
 namespace PushNotifications.Google
 {

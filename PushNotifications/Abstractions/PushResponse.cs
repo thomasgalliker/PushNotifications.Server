@@ -23,10 +23,7 @@ namespace PushNotifications
         public bool IsSuccessful { get; set; }
 
         public string DeviceToken { get; set; }
-    }
 
-    public enum PushResultStatus
-    {
-        InvalidRegistration = 0,
+        public IPushResponse OriginalResponse { get; set; }
     }
 }

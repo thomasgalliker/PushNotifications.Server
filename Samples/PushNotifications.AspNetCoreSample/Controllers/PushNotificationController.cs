@@ -25,18 +25,18 @@ namespace PushNotifications.AspNetCoreSample.Controllers
         private readonly ILogger<PushNotificationController> logger;
         private readonly IApnsClient apnsClient;
         private readonly IFcmClient fcmClient;
-        private readonly IPushNotificationService pushNotificationService;
+        private readonly IPushNotificationClient pushNotificationClient;
 
         public PushNotificationController(
             ILogger<PushNotificationController> logger,
-            IApnsClient apnsService,
-            IFcmClient fcmService,
-            IPushNotificationService pushNotificationService)
+            IApnsClient apnsClient,
+            IFcmClient fcmClient,
+            IPushNotificationClient pushNotificationClient)
         {
             this.logger = logger;
-            this.apnsClient = apnsService;
-            this.fcmClient = fcmService;
-            this.pushNotificationService = pushNotificationService;
+            this.apnsClient = apnsClient;
+            this.fcmClient = fcmClient;
+            this.pushNotificationClient = pushNotificationClient;
         }
 
         [HttpGet("send/apns")]
@@ -132,16 +132,26 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                 Devices = pushDevices
             };
 
-            var response = await this.pushNotificationService.SendAsync(request);
+            var response = await this.pushNotificationClient.SendAsync(request);
 
-            //if (response.IsSuccessful)
-            //{
-            //    this.logger.LogInformation($"Successfully sent push notification to device {token}");
-            //}
-            //else
-            //{
-            //    this.logger.LogInformation($"Failed to send push notification to device {token}: {response.Results[0].Error}");
-            //}
+            if (response.IsSuccessful)
+            {
+                this.logger.LogInformation($"Successfully sent push notification to {response.Results.Count} devices");
+            }
+            else
+            {
+                foreach (var result in response.Results)
+                {
+                    if (result.IsSuccessful)
+                    {
+                        this.logger.LogInformation($"Successfully sent push notification to DeviceToken={result.DeviceToken}");
+                    }
+                    else
+                    {
+                        this.logger.LogError($"Failed to send push notification to DeviceToken={result.DeviceToken}"); // TODO: Log reason for error here!
+                    }
+                }
+            }
 
             return response;
         }
