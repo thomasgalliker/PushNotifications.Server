@@ -7,6 +7,39 @@ using PushNotifications.Apple;
 
 namespace PushNotifications.AspNetCore
 {
+    public interface IApnsClientFactory
+    {
+        IApnsClient GetClient();
+    }
+
+    public class ApnsClientFactory : IApnsClientFactory
+    {
+        private readonly IApnsClient client;
+
+        public ApnsClientFactory(IHttpClientFactory httpClientFactory, IOptions<PushNotificationsOptions> options)
+        {
+            var pushNotificationsOptions = options.Value;
+
+            if (pushNotificationsOptions.ApnsJwtOptions is ApnsJwtOptions apnsJwtOptions)
+            {
+                var httpClient = httpClientFactory.CreateClient(pushNotificationsOptions.DisableServerCertificateValidation
+                    ? "httpClient_PushNotifications_DisableCerverCertValidation"
+                    : "httpClient_PushNotifications");
+
+                this.client = new ApnsClient(httpClient, apnsJwtOptions);
+            }
+            else
+            {
+                throw new Exception("Configuration was not found");
+            }
+        }
+
+        public IApnsClient GetClient()
+        {
+            return client;
+        }
+    }
+
     public class ApnsService : IApnsService
     {
         private readonly IApnsClient client;

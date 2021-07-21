@@ -2,6 +2,9 @@
 
 namespace PushNotifications
 {
+    /// <summary>
+    /// Cross-platform abstraction of a push request.
+    /// </summary>
     public class PushRequest : IPushRequest
     {
         public PushRequest()

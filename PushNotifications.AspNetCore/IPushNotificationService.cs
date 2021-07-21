@@ -8,6 +8,6 @@ namespace PushNotifications.AspNetCore
     /// </summary>
     public interface IPushNotificationService
     {
-        Task<PushResponse> SendAsync(PushRequest request, CancellationToken ct = default);
+        Task<IPushResponse> SendAsync(IPushRequest request, CancellationToken ct = default);
     }
 }

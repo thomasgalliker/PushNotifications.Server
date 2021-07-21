@@ -192,7 +192,7 @@ namespace PushNotifications.Apple
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 Logger.Info($"SendAsync to Token={apnsRequest.Token} successfully completed");
-                return ApnsResponse.Successful();
+                return ApnsResponse.Successful(apnsRequest.Token);
             }
 
             // something went wrong
@@ -212,7 +212,7 @@ namespace PushNotifications.Apple
                 throw;
             }
 
-            return ApnsResponse.Error(errorPayload.Reason);
+            return ApnsResponse.Error(apnsRequest.Token, errorPayload.Reason);
         }
 
         public static ApnsClient CreateUsingCert(X509Certificate2 cert)
