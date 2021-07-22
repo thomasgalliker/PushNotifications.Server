@@ -8,6 +8,9 @@ using PushNotifications.Logging;
 
 namespace PushNotifications
 {
+    /// <summary>
+    /// Cross-platform implementation of a push notification client.
+    /// </summary>
     public class PushNotificationClient : IPushNotificationClient
     {
         private readonly IFcmClient fcmClient;
@@ -64,6 +67,7 @@ namespace PushNotifications
             }
 
             var apnsPushResults = apnsResponses.Select(r => new PushResult { OriginalResponse = r, DeviceToken = r.Token, IsSuccessful = r.IsSuccessful });
+
             var fcmPushResults = fcmResponses.SelectMany(r => r.Results.Select(x => new PushResult { OriginalResponse = r, DeviceToken = x.RegistrationId, IsSuccessful = x.Error == null }));
 
             return new PushResponse(apnsPushResults.Union(fcmPushResults).ToList());

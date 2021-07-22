@@ -1,10 +1,11 @@
 ﻿using System;
+using PushNotifications.Abstractions;
 
-namespace PushNotifications.Abstractions
+namespace PushNotifications.Google
 {
     public class RetryAfterException : NotificationException
     {
-        public RetryAfterException (IPushRequest notification, string message, DateTime retryAfterUtc) : base (message, notification)
+        internal RetryAfterException (IPushRequest notification, string message, DateTime retryAfterUtc) : base (message, notification)
         {
             this.RetryAfterUtc = retryAfterUtc;
         }

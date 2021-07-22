@@ -4,12 +4,12 @@ namespace PushNotifications.Google
 {
     public class FcmNotificationException : NotificationException
     {
-        public FcmNotificationException (FcmRequest notification, string msg) : base (msg, notification)
+        internal FcmNotificationException (FcmRequest notification, string msg) : base (msg, notification)
         {
             this.Notification = notification;
         }
 
-        public FcmNotificationException (FcmRequest notification, string msg, string description) : base (msg, notification)
+        internal FcmNotificationException (FcmRequest notification, string msg, string description) : base (msg, notification)
         {
             this.Notification = notification;
             this.Description = description;
