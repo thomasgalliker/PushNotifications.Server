@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace PushNotifications.Apple
 {
+    [DebuggerDisplay("ApnsResponse: IsSuccessful={this.IsSuccessful}, Reason={this.Reason}")]
     [JsonObject]
     public class ApnsResponse : IPushResponse
     {

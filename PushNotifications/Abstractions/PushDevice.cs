@@ -1,5 +1,8 @@
-﻿namespace PushNotifications
+﻿using System.Diagnostics;
+
+namespace PushNotifications
 {
+    [DebuggerDisplay("PushDevice: {this.Platform}, DeviceToken={this.DeviceToken}")]
     public class PushDevice
     {
         public PushDevice(RuntimePlatform platform, string deviceToken)

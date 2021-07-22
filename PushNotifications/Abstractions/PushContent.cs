@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace PushNotifications
 {
+    [DebuggerDisplay("PushContent: Title={this.Title}, Body={this.Body}")]
     public class PushContent
     {
         public PushContent()
         {
             this.CustomData = new Dictionary<string, string>();
         }
-
-        public string Name { get; set; }
 
         public string Title { get; set; }
 

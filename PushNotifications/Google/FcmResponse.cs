@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Newtonsoft.Json;
 
 namespace PushNotifications.Google
 {
+    [DebuggerDisplay("FcmResponse: IsSuccessful={this.IsSuccessful}")]
     public class FcmResponse : IPushResponse
     {
         public FcmResponse()

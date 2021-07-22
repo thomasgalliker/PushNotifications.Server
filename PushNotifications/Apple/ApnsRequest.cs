@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Dynamic;
 
 namespace PushNotifications.Apple
 {
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class ApnsRequest : IPushRequest
     {
+        private string DebuggerDisplay
+        {
+            get { return string.Format("ApnsRequest: Token={0}", this.Token); }
+        }
+
         public string Token { get; private set; }
 
         public string VoipToken { get; private set; }

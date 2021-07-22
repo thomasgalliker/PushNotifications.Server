@@ -1,9 +1,11 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
 namespace PushNotifications.Google
 {
+    [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class FcmRequest : IPushRequest
     {
         public FcmRequest()
@@ -12,6 +14,15 @@ namespace PushNotifications.Google
             this.CollapseKey = string.Empty;
             this.Data = null;
             this.DelayWhileIdle = null;
+        }
+
+        private string DebuggerDisplay
+        {
+            get
+            {
+                var tokenDebuggerDisplay = this.RegistrationIds?.Count > 0 ? $"({this.RegistrationIds.Count})" : (this.To ?? "null");
+                return string.Format("FcmRequest: Token={0}", tokenDebuggerDisplay);
+            }
         }
 
         [JsonProperty("message_id")]

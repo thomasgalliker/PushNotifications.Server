@@ -66,9 +66,9 @@ namespace PushNotifications
                 fcmResponses.Add(fcmResponse);
             }
 
-            var apnsPushResults = apnsResponses.Select(r => new PushResult { OriginalResponse = r, DeviceToken = r.Token, IsSuccessful = r.IsSuccessful });
+            var apnsPushResults = apnsResponses.Select(r => new PushResponseResult { OriginalResponse = r, DeviceToken = r.Token, IsSuccessful = r.IsSuccessful });
 
-            var fcmPushResults = fcmResponses.SelectMany(r => r.Results.Select(x => new PushResult { OriginalResponse = r, DeviceToken = x.RegistrationId, IsSuccessful = x.Error == null }));
+            var fcmPushResults = fcmResponses.SelectMany(r => r.Results.Select(x => new PushResponseResult { OriginalResponse = r, DeviceToken = x.RegistrationId, IsSuccessful = x.Error == null }));
 
             return new PushResponse(apnsPushResults.Union(fcmPushResults).ToList());
         }
