@@ -50,12 +50,12 @@ namespace PushNotifications.AspNetCoreSample.Controllers
             {
                 var token = pushDevice.DeviceToken;
 
-                var request = new ApnsRequest(ApplePushType.Alert)
+                var apnsRequest = new ApnsRequest(ApplePushType.Alert)
                      .AddToken(token)
                      .AddAlert("Test Message", $"Message from PushNotifications.AspNetCoreSample @ {DateTime.Now}")
                      .AddCustomProperty("key", "value");
 
-                var response = await this.apnsClient.SendAsync(request);
+                var response = await this.apnsClient.SendAsync(apnsRequest);
                 responses.Add(response);
 
                 if (response.IsSuccessful)
@@ -82,7 +82,7 @@ namespace PushNotifications.AspNetCoreSample.Controllers
             {
                 var token = pushDevice.DeviceToken;
 
-                var request = new FcmRequest()
+                var fcmRequest = new FcmRequest()
                 {
                     To = token,
                     //RegistrationIds = pushDevices.ToList(),
@@ -97,7 +97,7 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                     },
                 };
 
-                var response = await this.fcmClient.SendAsync(request);
+                var response = await this.fcmClient.SendAsync(fcmRequest);
                 responses.Add(response);
 
                 if (response.IsSuccessful)
@@ -114,11 +114,11 @@ namespace PushNotifications.AspNetCoreSample.Controllers
         }
 
         [HttpGet("send/x")]
-        public async Task<IPushResponse> SendXPushNotifications()
+        public async Task<PushResponse> SendXPushNotifications()
         {
             this.logger.LogInformation("Sending push notifications...");
 
-            var request = new PushRequest
+            var pushRequest = new PushRequest
             {
                 Content = new PushContent
                 {
@@ -132,7 +132,7 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                 Devices = pushDevices
             };
 
-            var response = await this.pushNotificationClient.SendAsync(request);
+            var response = await this.pushNotificationClient.SendAsync(pushRequest);
 
             if (response.IsSuccessful)
             {
