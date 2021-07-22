@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using Newtonsoft.Json;
 
 namespace PushNotifications.Apple
@@ -31,6 +32,14 @@ namespace PushNotifications.Apple
         internal static ApnsResponse Error(string token, ApnsResponseReason reason)
         {
             return new ApnsResponse(token, reason, false);
+        }
+
+        public IEnumerable<string> GetTokensWithRegistrationProblem()
+        {
+            if (this.Reason == ApnsResponseReason.BadDeviceToken || this.Reason == ApnsResponseReason.MissingDeviceToken)
+            {
+                yield return this.Token;
+            }
         }
     }
 }

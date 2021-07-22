@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace PushNotifications.Google
@@ -42,6 +43,16 @@ namespace PushNotifications.Google
         public List<FcmMessageResult> Results { get; set; }
 
         public bool IsSuccessful => this.NumberOfFailures == 0;
+
+        public IEnumerable<string> GetTokensWithRegistrationProblem()
+        {
+            var results = this.Results.Where(r => r.Error == FcmResponseStatus.InvalidRegistration || r.Error == FcmResponseStatus.MissingRegistration || r.Error == FcmResponseStatus.NotRegistered);
+            foreach (var fcmMessageResult in results)
+            {
+                yield return fcmMessageResult.RegistrationId;
+
+            }
+        }
     }
 }
 

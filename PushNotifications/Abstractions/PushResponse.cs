@@ -18,5 +18,10 @@ namespace PushNotifications
         public ICollection<PushResponseResult> Results { get; }
 
         public bool IsSuccessful => !this.Results.Any(r => r.IsSuccessful == false);
+
+        public IEnumerable<string> GetTokensWithRegistrationProblem()
+        {
+            return this.Results.SelectMany(r => r.OriginalResponse.GetTokensWithRegistrationProblem());
+        }
     }
 }

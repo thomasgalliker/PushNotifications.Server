@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -139,6 +140,18 @@ namespace PushNotifications.AspNetCoreSample.Controllers
             }
             else
             {
+                // Detect all push device tokens which are expired, not registered, etc...
+                // These tokens need to be removed from our push notification repository/database.
+                var tokensWithRegistrationProblem = pushResponse.GetTokensWithRegistrationProblem();
+                if (tokensWithRegistrationProblem.Any())
+                {
+                    this.logger.LogWarning(
+                        $"Following device tokens have registration problems:{Environment.NewLine}" +
+                        $"{string.Join(Environment.NewLine, tokensWithRegistrationProblem)}");
+                }
+
+                // PushResponse not only consolidates the received push responses
+                // it also allows to evaluate the individual results (in case of a multicast request).
                 foreach (var result in pushResponse.Results)
                 {
                     if (result.IsSuccessful)

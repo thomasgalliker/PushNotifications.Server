@@ -10,17 +10,20 @@ namespace PushNotifications.Google
     public class FcmResponseStatus : IEquatable<FcmResponseStatus>
     {
         public static readonly FcmResponseStatus Unknown = new FcmResponseStatus();
+        public static readonly FcmResponseStatus MissingRegistration = new FcmResponseStatus("MissingRegistration");
         public static readonly FcmResponseStatus InvalidRegistration = new FcmResponseStatus("InvalidRegistration");
         public static readonly FcmResponseStatus NotRegistered = new FcmResponseStatus("NotRegistered");
-        public static readonly FcmResponseStatus MessageTooBig = new FcmResponseStatus("MessageTooBig");
-        public static readonly FcmResponseStatus MissingCollapseKey = new FcmResponseStatus("MissingCollapseKey");
-        public static readonly FcmResponseStatus MissingRegistrationId = new FcmResponseStatus("MissingRegistrationId");
-        public static readonly FcmResponseStatus Unavailable = new FcmResponseStatus("Unavailable");
+        public static readonly FcmResponseStatus InvalidPackageName = new FcmResponseStatus("InvalidPackageName");
         public static readonly FcmResponseStatus MismatchSenderId = new FcmResponseStatus("MismatchSenderId");
+        public static readonly FcmResponseStatus InvalidParameters = new FcmResponseStatus("InvalidParameters");
+        public static readonly FcmResponseStatus MessageTooBig = new FcmResponseStatus("MessageTooBig");
         public static readonly FcmResponseStatus InvalidDataKey = new FcmResponseStatus("InvalidDataKey");
         public static readonly FcmResponseStatus InvalidTtl = new FcmResponseStatus("InvalidTtl");
+        public static readonly FcmResponseStatus Unavailable = new FcmResponseStatus("Unavailable");
         public static readonly FcmResponseStatus InternalServerError = new FcmResponseStatus("InternalServerError");
-        public static readonly FcmResponseStatus InvalidPackageName = new FcmResponseStatus("InvalidPackageName");
+        public static readonly FcmResponseStatus DeviceMessageRate = new FcmResponseStatus("DeviceMessageRate");
+        public static readonly FcmResponseStatus TopicsMessageRate = new FcmResponseStatus("TopicsMessageRate");
+        public static readonly FcmResponseStatus InvalidApnsCredential = new FcmResponseStatus("InvalidApnsCredential");
 
         private readonly string value;
 
