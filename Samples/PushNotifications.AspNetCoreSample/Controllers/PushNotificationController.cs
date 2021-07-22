@@ -55,16 +55,16 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                      .AddAlert("Test Message", $"Message from PushNotifications.AspNetCoreSample @ {DateTime.Now}")
                      .AddCustomProperty("key", "value");
 
-                var response = await this.apnsClient.SendAsync(apnsRequest);
-                responses.Add(response);
+                var apnsResponse = await this.apnsClient.SendAsync(apnsRequest);
+                responses.Add(apnsResponse);
 
-                if (response.IsSuccessful)
+                if (apnsResponse.IsSuccessful)
                 {
                     this.logger.LogInformation($"Successfully sent push notification to device {token}");
                 }
                 else
                 {
-                    this.logger.LogInformation($"Failed to send push notification to device {token}: {response.Reason}");
+                    this.logger.LogInformation($"Failed to send push notification to device {token}: {apnsResponse.Reason}");
                 }
             }
 
@@ -97,16 +97,16 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                     },
                 };
 
-                var response = await this.fcmClient.SendAsync(fcmRequest);
-                responses.Add(response);
+                var fcmResponse = await this.fcmClient.SendAsync(fcmRequest);
+                responses.Add(fcmResponse);
 
-                if (response.IsSuccessful)
+                if (fcmResponse.IsSuccessful)
                 {
                     this.logger.LogInformation($"Successfully sent push notification to device {token}");
                 }
                 else
                 {
-                    this.logger.LogInformation($"Failed to send push notification to device {token}: {response.Results[0].Error}");
+                    this.logger.LogInformation($"Failed to send push notification to device {token}: {fcmResponse.Results[0].Error}");
                 }
             }
 
@@ -132,15 +132,15 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                 Devices = pushDevices
             };
 
-            var response = await this.pushNotificationClient.SendAsync(pushRequest);
+            var pushResponse = await this.pushNotificationClient.SendAsync(pushRequest);
 
-            if (response.IsSuccessful)
+            if (pushResponse.IsSuccessful)
             {
-                this.logger.LogInformation($"Successfully sent push notification to {response.Results.Count} devices");
+                this.logger.LogInformation($"Successfully sent push notification to {pushResponse.Results.Count} devices");
             }
             else
             {
-                foreach (var result in response.Results)
+                foreach (var result in pushResponse.Results)
                 {
                     if (result.IsSuccessful)
                     {
@@ -153,7 +153,7 @@ namespace PushNotifications.AspNetCoreSample.Controllers
                 }
             }
 
-            return response;
+            return pushResponse;
         }
     }
 }
