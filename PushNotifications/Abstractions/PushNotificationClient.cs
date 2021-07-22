@@ -27,13 +27,14 @@ namespace PushNotifications
             var apnsResponses = new List<ApnsResponse>();
             var fcmResponses = new List<FcmResponse>();
 
-            var iOSPushDevices = pushRequest.Devices.Where(d => d.Platform == RuntimePlatform.iOS).ToList();
-            var androidPushDevices = pushRequest.Devices.Where(d => d.Platform == RuntimePlatform.Android).ToList();
-            Logger.Info($"SendAsync sends PushRequest to {iOSPushDevices.Count + androidPushDevices.Count} devices ({iOSPushDevices.Count} iOS, {androidPushDevices.Count} Android)");
+            var apnsPushDevices = pushRequest.Devices.Where(d => d.Platform == RuntimePlatform.iOS).ToList();
+            var fcmPushDevices = pushRequest.Devices.Where(d => d.Platform == RuntimePlatform.Android).ToList();
+            Logger.Info($"SendAsync sends PushRequest to {apnsPushDevices.Count + fcmPushDevices.Count} devices ({apnsPushDevices.Count} iOS, {fcmPushDevices.Count} Android)");
 
-            if (iOSPushDevices.Any())
+            // Handle APNS push notifications
+            if (apnsPushDevices.Any())
             {
-                foreach (var pushDevice in iOSPushDevices)
+                foreach (var pushDevice in apnsPushDevices)
                 {
                     var apnsRequest = new ApnsRequest(ApplePushType.Alert)
                         .AddToken(pushDevice.DeviceToken)
@@ -49,11 +50,12 @@ namespace PushNotifications
                 }
             }
 
-            if (androidPushDevices.Any())
+            // Handle FCM push notifications
+            if (fcmPushDevices.Any())
             {
                 var fcmRequest = new FcmRequest()
                 {
-                    RegistrationIds = androidPushDevices.Select(d => d.DeviceToken).ToList(),
+                    RegistrationIds = fcmPushDevices.Select(d => d.DeviceToken).ToList(),
                     Notification = new FcmNotification
                     {
                         Title = pushRequest.Content.Title,
