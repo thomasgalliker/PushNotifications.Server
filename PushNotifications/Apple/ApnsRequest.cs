@@ -37,7 +37,6 @@ namespace PushNotifications.Apple
         /// <summary>
         /// See <a href="https://developer.apple.com/documentation/usernotifications/unnotificationcontent/1649866-categoryidentifier">official documentation</a> for reference.
         /// </summary>
-        
         public string Category { get; private set; }
 
         public bool IsContentAvailable { get; private set; }
@@ -56,7 +55,6 @@ namespace PushNotifications.Apple
         /// When sending the same notification more than once, use the same value in this header to coalesce the requests.
         /// <b>The value of this key must not exceed 64 bytes.</b>
         /// </summary>
-        
         public string CollapseId { get; private set; }
 
         /// <summary>
@@ -105,7 +103,7 @@ namespace PushNotifications.Apple
         /// <param name="subtitle">Alert subtitle. Can be null.</param>
         /// <param name="body">Alert body. <b>Cannot be null.</b></param>
         /// <returns></returns>
-        public ApnsRequest AddAlert( string title,  string subtitle, string body)
+        public ApnsRequest AddAlert(string title,  string subtitle, string body)
         {
             this.Alert = new ApplePushAlert(title, subtitle, body);
             if (title == null)
@@ -122,7 +120,7 @@ namespace PushNotifications.Apple
         /// <param name="title">Alert title. Can be null.</param>
         /// <param name="body">Alert body. <b>Cannot be null.</b></param>
         /// <returns></returns>
-        public ApnsRequest AddAlert( string title, string body)
+        public ApnsRequest AddAlert(string title, string body)
         {
             this.Alert = new ApplePushAlert(title, body);
             if (title == null)
@@ -152,7 +150,7 @@ namespace PushNotifications.Apple
         /// <param name="tittleLocArgs">Variable string values to appear in place of the format specifiers in title-loc-key. Can be null.</param>
         /// <param name="actionLocKey">The string is used as a key to get a localized string in the current localization to use for the right button’s title instead of “View". Can be null.</param>
         /// <returns></returns>
-        public ApnsRequest AddLocalizedAlert( string titleLocKey,  string[] tittleLocArgs, string locKey, string[] locArgs,  string actionLocKey)
+        public ApnsRequest AddLocalizedAlert(string titleLocKey,  string[] tittleLocArgs, string locKey, string[] locArgs,  string actionLocKey)
         {
             this.LocalizedAlert = new ApplePushLocalizedAlert(titleLocKey, tittleLocArgs, locKey, locArgs, actionLocKey);
             return this;
