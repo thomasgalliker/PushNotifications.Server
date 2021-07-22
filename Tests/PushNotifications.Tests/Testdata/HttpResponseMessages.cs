@@ -1,9 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
-using PushNotifications.Messages;
 using Newtonsoft.Json;
 
 namespace PushNotifications.Tests.Testdata
@@ -17,9 +13,9 @@ namespace PushNotifications.Tests.Testdata
                 return new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(JsonConvert.SerializeObject(new AppCenterPushSuccess
+                    Content = new StringContent(JsonConvert.SerializeObject(new PushResponse(null)
                     {
-                        NotificationId = notificationId
+                        //NotificationId = notificationId
                     }))
                 };
             }
@@ -29,10 +25,10 @@ namespace PushNotifications.Tests.Testdata
                 return new HttpResponseMessage()
                 {
                     StatusCode = HttpStatusCode.Unauthorized,
-                    Content = new StringContent(JsonConvert.SerializeObject(new AppCenterPushError
+                    Content = new StringContent(JsonConvert.SerializeObject(new PushResponse(null)
                     {
-                        ErrorMessage = errorMessage,
-                        ErrorCode = errorCode,
+                        //ErrorMessage = errorMessage,
+                        //ErrorCode = errorCode,
                     }))
                 };
             }
