@@ -1,0 +1,118 @@
+####################################################################
+# VSTS Build Configuration, Version 1.3
+#
+# (c)2021 superdev GmbH
+####################################################################
+
+name: 1.0.$(date:yy)$(DayOfYear).$(rev:rr)
+
+pool:
+  vmImage: 'windows-2019'
+
+trigger:
+  branches:
+    include:
+    - master
+    - develop
+    - release/*
+    - feature/*
+
+  paths:
+    exclude:
+    - README.md
+
+variables:
+  solution: 'PushNotifications.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  buildVersionPostfix: '-pre'
+
+steps:
+- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
+  displayName: 'Set Assembly Manifest Data'
+  inputs:
+    FileNames: |
+     PushNotifications.csproj
+    InsertAttributes: true
+    Product: 'PushNotifications'
+    Description: ''
+    Company: 'superdev GmbH'
+    Copyright: '(c) $(date:YYYY) superdev GmbH'
+    VersionNumber: '$(Build.BuildNumber)'
+    FileVersionNumber: '$(Build.BuildNumber)'
+
+- task: NuGetToolInstaller@0
+  displayName: 'Use NuGet 5.x'
+  inputs:
+    versionSpec: 5.x
+
+- task: NuGetCommand@2
+  displayName: 'NuGet restore'
+  inputs:
+    restoreSolution: '$(solution)'
+
+- powershell: |
+   Write-Host "##vso[task.setvariable variable=PackageVersion]$(Build.BuildNumber)"
+   Write-Host "##vso[task.setvariable variable=PackageVersionPre]$(Build.BuildNumber)$(BuildVersionPostfix)"
+  displayName: 'Set PackageVersion'
+
+- task: VSBuild@1
+  displayName: 'Build solution'
+  inputs:
+    solution: '$(solution)'
+    msbuildArgs: ''
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
+
+- task: DotNetCoreCLI@2
+  displayName: 'Run UnitTests'
+  inputs:
+    command: test
+    projects: '**/*.Tests.csproj'
+    arguments: '--framework netcoreapp3.1'
+    
+- task: DotNetCoreCLI@2
+  displayName: 'Pack PushNotifications -pre'
+  inputs:
+    command: pack
+    packagesToPack: PushNotifications/PushNotifications.csproj
+    versioningScheme: byEnvVar
+    versionEnvVar: PackageVersionPre
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pack PushNotifications.AspNetCore -pre'
+  inputs:
+    command: pack
+    packagesToPack: PushNotifications.AspNetCore/PushNotifications.AspNetCore.csproj
+    versioningScheme: byEnvVar
+    versionEnvVar: PackageVersionPre
+
+- task: DotNetCoreCLI@2
+  displayName: 'Pack PushNotifications'
+  inputs:
+    command: pack
+    packagesToPack: PushNotifications/PushNotifications.csproj
+    versioningScheme: byEnvVar
+    versionEnvVar: PackageVersion
+    
+- task: DotNetCoreCLI@2
+  displayName: 'Pack PushNotifications.AspNetCore'
+  inputs:
+    command: pack
+    packagesToPack: PushNotifications.AspNetCore/PushNotifications.AspNetCore.csproj
+    versioningScheme: byEnvVar
+    versionEnvVar: PackageVersion
+
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: '$(system.defaultworkingdirectory)'
+
+    Contents: |
+     **\bin\$(BuildConfiguration)\**
+     **\bin\*.nupkg
+
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
