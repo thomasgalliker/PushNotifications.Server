@@ -20,12 +20,18 @@ Use the following command to install PushNotifications.AspNetCore using NuGet pa
 
 You can use this library in any ASP.NET Core project which is compatible to .NET Core 3.1 and higher.
 
+#### Configure using appsettings.json
 
 ### API Usage
 The following sections document basic use cases of this library. The following code excerpts can also be found in the [sample applications](https://github.com/thomasgalliker/PushNotifications/tree/develop/Samples).
 
-#### Sending Cross-Platform Push Notifications
-tbd
+#### Cross-Platform Push Notifications
+PushNotificationClient is used to send cross-platform push notifications. In order to create a new instance of PushNotificationClient, you have to create an instance of FcmClient and ApnsClient and pass it into PushNotificationClient.
+```C#
+var pushNotificationClient = new PushNotificationClient(fcmClient, apnsClient);
+```
+##### Sending PushRequests
+Cross-platform push requests are abstracted using class PushRequest. Create a new PushRequest and send it using the SendAsync method of PushNotificationClient.
 ```C#
 var pushRequest = new PushRequest
 {
@@ -46,7 +52,12 @@ var pushResponse = await this.pushNotificationClient.SendAsync(pushRequest);
 
 
 #### Sending Push Notifications to FCM (Android)
-tbd
+In order to send FCM push notifications, you have to create a new instance of FcmClient. FcmClient requires an instance of FcmConfiguration, which contains the FCM configuration parameters which can be found on http://firebase.google.com.
+You can either create a FcmConfiguration manually (new FcmConfiguration{ ... }) or by binding from a appsettings.json file. See sample projects for more info.
+```C#
+IFcmClient fcmClient = new FcmClient(fcmConfiguration);
+```
+Create a new FcmRequest and send it using the SendAsync method of FcmClient.
 ```C#
 var fcmRequest = new FcmRequest()
 {
