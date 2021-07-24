@@ -77,11 +77,11 @@ var apnsResponse = await this.apnsClient.SendAsync(apnsRequest);
 ```
 
 ### Links
-Sending Push Notifications
-https://docs.microsoft.com/en-us/appcenter/push/send-notification
+Handling Notification Responses from APNs
+https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/handling_notification_responses_from_apns
 
-Using the Push API
-https://docs.microsoft.com/en-us/appcenter/push/rest-api
+Firebase Cloud Messaging HTTP protocol
+https://firebase.google.com/docs/cloud-messaging/http-server-ref
 
 ### Contribution
 Contributors welcome! If you find a bug or you want to propose a new feature, feel free to do so by opening a new issue on github.com.
