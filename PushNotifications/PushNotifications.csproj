@@ -10,7 +10,7 @@
 		<AssemblyName>PushNotifications</AssemblyName>
 		<PackageId>PushNotifications.NET</PackageId>
 		<PackageTags>APNS;GCM;FCM;PushNotifications;push;notification;PushSharp</PackageTags>
-		<PackageIconUrl>https://raw.githubusercontent.com/thomasgalliker/PushNotifications/develop/logo.png</PackageIconUrl>
+		<PackageIconUrl>https://raw.githubusercontent.com/thomasgalliker/PushNotifications/develop/Images/logo.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/thomasgalliker/PushNotifications</PackageProjectUrl>
 		<PackageLicenseUrl>http://opensource.org/licenses/Apache-2.0</PackageLicenseUrl>
 		<RepositoryType>git</RepositoryType>

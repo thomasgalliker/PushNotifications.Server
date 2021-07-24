@@ -10,7 +10,7 @@
 		<AssemblyName>PushNotifications.AspNetCore</AssemblyName>
 		<PackageId>PushNotifications.AspNetCore</PackageId>
 		<PackageTags>APNS;GCM;FCM;PushNotifications;push;notification;PushSharp;AspNetCore</PackageTags>
-		<PackageIconUrl>https://raw.githubusercontent.com/thomasgalliker/PushNotifications/develop/logo.png</PackageIconUrl>
+		<PackageIconUrl>https://raw.githubusercontent.com/thomasgalliker/PushNotifications/develop/Images/logo.png</PackageIconUrl>
 		<PackageProjectUrl>https://github.com/thomasgalliker/PushNotifications</PackageProjectUrl>
 		<PackageLicenseUrl>http://opensource.org/licenses/Apache-2.0</PackageLicenseUrl>
 		<RepositoryType>git</RepositoryType>
