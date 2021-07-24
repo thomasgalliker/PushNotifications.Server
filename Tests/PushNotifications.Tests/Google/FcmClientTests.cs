@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
-using PushNotifications.Apple;
 using PushNotifications.Google;
 using PushNotifications.Tests.Mocks;
 using PushNotifications.Tests.Testdata;
