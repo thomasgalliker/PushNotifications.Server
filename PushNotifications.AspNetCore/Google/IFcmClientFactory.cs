@@ -2,7 +2,7 @@
 
 namespace PushNotifications.AspNetCore.Google
 {
-    public interface IFcmClientFactory
+    internal interface IFcmClientFactory
     {
         IFcmClient GetClient();
     }

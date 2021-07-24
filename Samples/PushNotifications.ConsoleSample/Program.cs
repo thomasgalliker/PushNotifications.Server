@@ -39,21 +39,14 @@ namespace PushNotifications.ConsoleSample
             var options = new ApnsJwtOptions();
             configurationSection.Bind(options);
 
-            try
-            {
-                SendPushNotificationAsync(options, "85bea18076def67319aa2345e30ca5fbce20296e2af05640cd6036c9543dbbb3").Wait();
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+            SendApnsPushNotification(options, "85bea18076def67319aa2345e30ca5fbce20296e2af05640cd6036c9543dbbb3").Wait();
 
             Console.ReadKey();
         }
 
-        private static async Task SendPushNotificationAsync(ApnsJwtOptions options, string token)
+        private static async Task SendApnsPushNotification(ApnsJwtOptions options, string token)
         {
-            IApnsClient apnsClient = new ApnsClient(new HttpClient(), options);
+            IApnsClient apnsClient = new ApnsClient(new ConsoleLogger(), new HttpClient(), options);
 
             var push = new ApnsRequest(ApplePushType.Alert)
                 .AddToken(token)

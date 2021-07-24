@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PushNotifications.Apple;
 
@@ -9,7 +10,7 @@ namespace PushNotifications.AspNetCore.Apple
     {
         private readonly IApnsClient client;
 
-        public ApnsClientFactory(IHttpClientFactory httpClientFactory, IOptions<PushNotificationsOptions> options)
+        public ApnsClientFactory(ILogger<ApnsClient> logger, IHttpClientFactory httpClientFactory, IOptions<PushNotificationsOptions> options)
         {
             var pushNotificationsOptions = options.Value;
 
@@ -19,7 +20,7 @@ namespace PushNotifications.AspNetCore.Apple
                     ? "httpClient_PushNotifications_DisableCerverCertValidation"
                     : "httpClient_PushNotifications");
 
-                this.client = new ApnsClient(httpClient, apnsJwtOptions);
+                this.client = new ApnsClient(new AspNetCoreLogger(logger), httpClient, apnsJwtOptions);
             }
             else
             {

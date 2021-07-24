@@ -7,7 +7,7 @@ namespace PushNotifications.Logging
     {
         public void Log(LogLevel level, string message)
         {
-            Debug.WriteLine($"{DateTime.UtcNow}|Paging.NET|{level}|{message}[EOL]");
+            Debug.WriteLine($"{DateTime.UtcNow}|PushNotifications|{level}|{message}[EOL]");
         }
     }
 }

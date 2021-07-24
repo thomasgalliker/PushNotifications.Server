@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PushNotifications.Google;
 
@@ -9,7 +10,7 @@ namespace PushNotifications.AspNetCore.Google
     {
         private readonly IFcmClient client;
 
-        public FcmClientFactory(IHttpClientFactory httpClientFactory, IOptions<PushNotificationsOptions> options)
+        public FcmClientFactory(ILogger<FcmClient> logger, IHttpClientFactory httpClientFactory, IOptions<PushNotificationsOptions> options)
         {
             var pushNotificationsOptions = options.Value;
 
@@ -19,7 +20,7 @@ namespace PushNotifications.AspNetCore.Google
                     ? "httpClient_PushNotifications_DisableCerverCertValidation"
                     : "httpClient_PushNotifications");
 
-                this.client = new FcmClient(httpClient, fcmConfiguration);
+                this.client = new FcmClient(new AspNetCoreLogger(logger), httpClient, fcmConfiguration);
             }
             else
             {

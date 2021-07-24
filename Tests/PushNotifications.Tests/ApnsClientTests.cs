@@ -42,7 +42,7 @@ namespace PushNotifications.Tests
                 UseSandbox = true,
             };
 
-            var apnsClient = new ApnsClient(httpClientMock.Object, options);
+            var apnsClient = new ApnsClient(loggerMock.Object, httpClientMock.Object, options);
 
             var token = new string('X', 64);
             var apnsRequest = new ApnsRequest(ApplePushType.Alert)

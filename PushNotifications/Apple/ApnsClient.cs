@@ -22,6 +22,7 @@ namespace PushNotifications.Apple
         internal const string ProductionEndpoint = "https://api.push.apple.com";                // --> Production
         private const string bundleIdVoipSuffix = ".voip";
 
+        private readonly ILogger logger;
         private readonly HttpClient httpClient;
         private readonly CngKey key;
         private readonly string keyId;
@@ -41,15 +42,27 @@ namespace PushNotifications.Apple
         /// Constructs a client instance with given <paramref name="options"/>
         /// for token-based authentication (using a .p8 certificate).
         /// </summary>
-        private ApnsClient(HttpClient httpClient)
+        private ApnsClient(ILogger logger, HttpClient httpClient)
         {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
             this.httpClient.DefaultRequestHeaders.UserAgent.Clear();
             this.httpClient.DefaultRequestHeaders.UserAgent.Add(HttpClientUtils.GetProductInfo(this));
         }
 
-        public ApnsClient(HttpClient httpClient, ApnsJwtOptions options) : this(httpClient)
+        public ApnsClient(ApnsJwtOptions options)
+            : this(Logger.Current, new HttpClient(), options)
+        {
+        }
+
+        public ApnsClient(X509Certificate x509Certificate)
+            : this(Logger.Current, new HttpClient(), x509Certificate)
+        {
+        }
+
+        public ApnsClient(ILogger logger, HttpClient httpClient, ApnsJwtOptions options)
+            : this(logger, httpClient)
         {
             if (options == null)
             {
@@ -93,27 +106,28 @@ namespace PushNotifications.Apple
         }
 
         /// <summary>
-        /// Constructs a client instance with given <paramref name="cert"/>
+        /// Constructs a client instance with given <paramref name="x509Certificate"/>
         /// for certificate-based authentication (using a .p12 certificate).
         /// </summary>
-        public ApnsClient(HttpClient httpClient, X509Certificate cert) : this(httpClient)
+        public ApnsClient(ILogger logger, HttpClient httpClient, X509Certificate x509Certificate)
+            : this(logger, httpClient)
         {
-            if (cert == null)
+            if (x509Certificate == null)
             {
-                throw new ArgumentNullException(nameof(cert));
+                throw new ArgumentNullException(nameof(x509Certificate));
             }
 
-            var split = cert.Subject.Split(new[] { "0.9.2342.19200300.100.1.1=" }, StringSplitOptions.RemoveEmptyEntries);
+            var split = x509Certificate.Subject.Split(new[] { "0.9.2342.19200300.100.1.1=" }, StringSplitOptions.RemoveEmptyEntries);
             if (split.Length != 2)
             {
                 // On Linux .NET Core cert.Subject prints `userId=xxx` instead of `0.9.2342.19200300.100.1.1=xxx`
-                split = cert.Subject.Split(new[] { "userId=" }, StringSplitOptions.RemoveEmptyEntries);
+                split = x509Certificate.Subject.Split(new[] { "userId=" }, StringSplitOptions.RemoveEmptyEntries);
             }
 
             if (split.Length != 2)
             {
                 // if subject prints `uid=xxx` instead of `0.9.2342.19200300.100.1.1=xxx`
-                split = cert.Subject.Split(new[] { "uid=" }, StringSplitOptions.RemoveEmptyEntries);
+                split = x509Certificate.Subject.Split(new[] { "uid=" }, StringSplitOptions.RemoveEmptyEntries);
             }
 
             if (split.Length != 2)
@@ -129,7 +143,7 @@ namespace PushNotifications.Apple
 
         public async Task<ApnsResponse> SendAsync(ApnsRequest apnsRequest, CancellationToken ct = default)
         {
-            Logger.Debug($"SendAsync to Token={apnsRequest.Token} started...");
+            this.logger.Log(LogLevel.Debug, $"SendAsync to Token={apnsRequest.Token} started...");
 
             if (this.useCert)
             {
@@ -185,18 +199,18 @@ namespace PushNotifications.Apple
             }
 
             var responseContentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            Logger.Debug($"SendAsync returned json content:{Environment.NewLine}{responseContentJson}");
+            this.logger.Log(LogLevel.Debug, $"SendAsync returned json content:{Environment.NewLine}{responseContentJson}");
 
             // Process status codes specified by APNs documentation
             // https://developer.apple.com/documentation/usernotifications/setting_up_a_remote_notification_server/handling_notification_responses_from_apns
             if (response.StatusCode == HttpStatusCode.OK)
             {
-                Logger.Info($"SendAsync to Token={apnsRequest.Token} successfully completed");
+                this.logger.Log(LogLevel.Info, $"SendAsync to Token={apnsRequest.Token} successfully completed");
                 return ApnsResponse.Successful(apnsRequest.Token);
             }
 
             var errorPayload = JsonConvert.DeserializeObject<ApnsErrorResponsePayload>(responseContentJson);
-            Logger.Error($"SendAsync to Token={apnsRequest.Token} failed with StatusCode={(int)response.StatusCode}({response.StatusCode}), Reason={errorPayload.Reason}");
+            this.logger.Log(LogLevel.Error, $"SendAsync to Token={apnsRequest.Token} failed with StatusCode={(int)response.StatusCode}({response.StatusCode}), Reason={errorPayload.Reason}");
 
             return ApnsResponse.Error(apnsRequest.Token, errorPayload.Reason);
         }
@@ -213,8 +227,10 @@ namespace PushNotifications.Apple
 
             handler.ClientCertificates.Add(cert);
             var httpClient = new HttpClient(handler);
-            return new ApnsClient(httpClient, cert);
+            return new ApnsClient(Logger.Current, httpClient, cert);
 #endif
+
+
         }
 
         public static ApnsClient CreateUsingCert(string pathToCert, string certPassword = null)
