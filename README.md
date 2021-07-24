@@ -1,14 +1,14 @@
 # PushNotifications
-[![Version](https://img.shields.io/nuget/v/PushNotifications.svg)](https://www.nuget.org/packages/PushNotifications)  [![Downloads](https://img.shields.io/nuget/dt/PushNotifications.svg)](https://www.nuget.org/packages/PushNotifications)
+[![Version](https://img.shields.io/nuget/v/PushNotifications.NET.svg)](https://www.nuget.org/packages/PushNotifications.NET)  [![Downloads](https://img.shields.io/nuget/dt/PushNotifications.NET.svg)](https://www.nuget.org/packages/PushNotifications.NET)
 
 <img src="https://raw.githubusercontent.com/thomasgalliker/PushNotifications/develop/logo.png" height="100" alt="PushNotifications" align="right">
 Server-side .NET library for sending push notifications to Apple Push Notification Service (APNS) and Google's Firebase Cloud Messaging (FCM).
 
 ### Download and Install PushNotifications
-This library is available on NuGet: https://www.nuget.org/packages/PushNotifications/
+This library is available on NuGet: https://www.nuget.org/packages/PushNotifications.NET
 Use the following command to install PushNotifications using NuGet package manager console:
 
-    PM> Install-Package PushNotifications
+    PM> Install-Package PushNotifications.NET
 
 You can use this library in any .NET project which is compatible to .NET Standard 2.0 and higher.
 
