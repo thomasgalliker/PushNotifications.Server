@@ -45,5 +45,10 @@ namespace PushNotifications.Tests.Mocks
                 ItExpr.IsAny<CancellationToken>()
             );
         }
+
+        public void VerifyNoOtherCalls()
+        {
+            this.httpMessageHandlerMock.VerifyNoOtherCalls();
+        }
     }
 }

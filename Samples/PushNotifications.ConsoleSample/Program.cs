@@ -47,8 +47,13 @@ namespace PushNotifications.ConsoleSample
 
             IFcmClient fcmClient = new FcmClient(fcmConfiguration);
 
+            // Sending push notifications to iOS devices
             SendApnsPushNotification(apnsClient).Wait();
 
+            // Sending push notifications to Android devices
+            SendFcmPushNotification(fcmClient).Wait();
+
+            // Sending push notifications to all platforms
             SendXPushNotifications(fcmClient, apnsClient).Wait();
 
             Console.ReadKey();
@@ -63,7 +68,7 @@ namespace PushNotifications.ConsoleSample
                 Content = new PushContent
                 {
                     Title = "Test Message",
-                    Body = $"Message from PushNotifications.AspNetCoreSample @ {DateTime.Now}",
+                    Body = $"Message from PushNotifications.ConsoleSample @ {DateTime.Now}",
                     CustomData = new Dictionary<string, string>
                     {
                         { "key", "value" }
@@ -130,6 +135,33 @@ namespace PushNotifications.ConsoleSample
                 {
                     Console.WriteLine($"Failed to send push notification to device {token}: {apnsResponse.Reason}");
                 }
+            }
+        }
+
+        private static async Task SendFcmPushNotification(IFcmClient fcmClient)
+        {
+            var fcmRequest = new FcmRequest()
+            {
+                RegistrationIds = pushDevices.Where(d => d.Platform == RuntimePlatform.Android).Select(d => d.DeviceToken).ToList(),
+                Notification = new FcmNotification
+                {
+                    Title = "Test Message",
+                    Body = $"Message from PushNotifications.ConsoleSample @ {DateTime.Now}",
+                },
+                Data = new Dictionary<string, string>
+                {
+                    { "key", "value" }
+                },
+            };
+
+            var fcmResponse = await fcmClient.SendAsync(fcmRequest);
+            if (fcmResponse.IsSuccessful)
+            {
+                Console.WriteLine($"Successfully sent push notification");
+            }
+            else
+            {
+                Console.WriteLine($"Failed to send push notification");
             }
         }
 

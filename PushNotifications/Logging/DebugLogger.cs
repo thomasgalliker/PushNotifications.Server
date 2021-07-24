@@ -5,9 +5,9 @@ namespace PushNotifications.Logging
 {
     public class DebugLogger : ILogger
     {
-        public void Log(LogLevel level, string message)
+        public void Log(LogLevel logLevel, string message)
         {
-            Debug.WriteLine($"{DateTime.UtcNow}|PushNotifications|{level}|{message}[EOL]");
+            Debug.WriteLine($"{DateTime.UtcNow}|PushNotifications|{logLevel}|{message}[EOL]");
         }
     }
 }
