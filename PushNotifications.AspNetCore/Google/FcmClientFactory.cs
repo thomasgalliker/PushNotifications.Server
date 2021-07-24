@@ -2,6 +2,7 @@
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using PushNotifications.AspNetCore.Logging;
 using PushNotifications.Google;
 
 namespace PushNotifications.AspNetCore.Google

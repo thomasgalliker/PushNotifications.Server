@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 
-namespace PushNotifications.AspNetCore
+namespace PushNotifications.AspNetCore.Logging
 {
     internal class AspNetCoreLogger : PushNotifications.Logging.ILogger
     {

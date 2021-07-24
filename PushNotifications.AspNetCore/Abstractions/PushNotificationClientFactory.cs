@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using PushNotifications.Apple;
+using PushNotifications.AspNetCore.Logging;
 using PushNotifications.Google;
 
 namespace PushNotifications.AspNetCore
