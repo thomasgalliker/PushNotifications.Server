@@ -10,7 +10,7 @@ namespace PushNotifications
     [DebuggerDisplay("PushResponse: IsSuccessful={this.IsSuccessful}, Results={this.Results.Count}")]
     public class PushResponse : IPushResponse
     {
-        internal PushResponse(ICollection<PushResponseResult> results)
+        public PushResponse(ICollection<PushResponseResult> results)
         {
             this.Results = results ?? new List<PushResponseResult>();
         }
