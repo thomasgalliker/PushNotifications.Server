@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using PushNotifications.Apple;
-using PushNotifications.Logging;
 using PushNotifications.Tests.Mocks;
 using PushNotifications.Tests.Testdata;
 using PushNotifications.Tests.Utils;
@@ -23,7 +22,7 @@ namespace PushNotifications.Tests
             this.logger = new TestOutputHelperLogger<ApnsClient>(testOutputHelper);
         }
 
-        [Fact(Skip = "local test execution only!"]
+        [Fact(Skip = "local test execution only!")]
         public async Task ShouldSendAsync_Succesful()
         {
             // Arrange
@@ -34,7 +33,7 @@ namespace PushNotifications.Tests
 
             var apnsJwtOptions = TestConfigurations.GetApnsJwtOptions();
 
-            var apnsClient = new ApnsClient(logger, httpClientMock.Object, apnsJwtOptions);
+            var apnsClient = new ApnsClient(this.logger, httpClientMock.Object, apnsJwtOptions);
 
             var token = new string('X', 64);
             var apnsRequest = new ApnsRequest(ApplePushType.Alert)
