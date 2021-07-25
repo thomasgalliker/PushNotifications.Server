@@ -37,7 +37,15 @@ namespace PushNotifications
 
             var apnsPushDevices = pushRequest.Devices.Where(d => d.Platform == RuntimePlatform.iOS).ToList();
             var fcmPushDevices = pushRequest.Devices.Where(d => d.Platform == RuntimePlatform.Android).ToList();
-            this.logger.Log(LogLevel.Info, $"SendAsync sends PushRequest to {apnsPushDevices.Count + fcmPushDevices.Count} devices ({apnsPushDevices.Count} iOS, {fcmPushDevices.Count} Android)");
+
+            var platFormCounts = pushRequest.Devices
+                .GroupBy(d => d.Platform)
+                .Select(g => new { Key = g.Key, Count = g.Count() })
+                .Where(g => g.Count > 0)
+                .Select(g => $"{g.Count} {g.Key}");
+
+            var platformCountSummary = string.Join(", ", platFormCounts);
+            this.logger.Log(LogLevel.Info, $"SendAsync sends PushRequest to {apnsPushDevices.Count + fcmPushDevices.Count} devices ({platformCountSummary})");
 
             // Handle APNS push notifications
             if (apnsPushDevices.Any())
@@ -53,35 +61,35 @@ namespace PushNotifications
                         apnsRequest.AddCustomProperty(item.Key, item.Value);
                     }
 
-                    var apnsResponse = await this.apnsClient.SendAsync(apnsRequest, ct);
-                    apnsResponses.Add(apnsResponse);
+    var apnsResponse = await this.apnsClient.SendAsync(apnsRequest, ct);
+    apnsResponses.Add(apnsResponse);
                 }
             }
 
             // Handle FCM push notifications
             if (fcmPushDevices.Any())
-            {
-                var fcmRequest = new FcmRequest()
-                {
-                    RegistrationIds = fcmPushDevices.Select(d => d.DeviceToken).ToList(),
-                    Notification = new FcmNotification
-                    {
-                        Title = pushRequest.Content.Title,
-                        Body = pushRequest.Content.Body,
-                    },
-                    Data = pushRequest.Content.CustomData
-                };
+{
+    var fcmRequest = new FcmRequest()
+    {
+        RegistrationIds = fcmPushDevices.Select(d => d.DeviceToken).ToList(),
+        Notification = new FcmNotification
+        {
+            Title = pushRequest.Content.Title,
+            Body = pushRequest.Content.Body,
+        },
+        Data = pushRequest.Content.CustomData
+    };
 
-                var fcmResponse = await this.fcmClient.SendAsync(fcmRequest, ct);
-                fcmResponses.Add(fcmResponse);
-            }
+    var fcmResponse = await this.fcmClient.SendAsync(fcmRequest, ct);
+    fcmResponses.Add(fcmResponse);
+}
 
-            // Map platform-specific responses to platform-agnostic response
-            var apnsPushResults = apnsResponses.Select(r => new PushResponseResult(r, r.Token, r.IsSuccessful));
+// Map platform-specific responses to platform-agnostic response
+var apnsPushResults = apnsResponses.Select(r => new PushResponseResult(r, r.Token, r.IsSuccessful));
 
-            var fcmPushResults = fcmResponses.SelectMany(r => r.Results.Select(x => new PushResponseResult(r, x.RegistrationId, isSuccessful: x.Error == null)));
+var fcmPushResults = fcmResponses.SelectMany(r => r.Results.Select(x => new PushResponseResult(r, x.RegistrationId, isSuccessful: x.Error == null)));
 
-            return new PushResponse(apnsPushResults.Union(fcmPushResults).ToList());
+return new PushResponse(apnsPushResults.Union(fcmPushResults).ToList());
         }
     }
 }
