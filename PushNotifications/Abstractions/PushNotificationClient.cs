@@ -40,8 +40,9 @@ namespace PushNotifications
 
             var platFormCounts = pushRequest.Devices
                 .GroupBy(d => d.Platform)
-                .Select(g => new { Key = g.Key, Count = g.Count() })
+                .Select(g => new { Key = g.Key.ToString(), Count = g.Count() })
                 .Where(g => g.Count > 0)
+                .OrderBy(g => g.Key)
                 .Select(g => $"{g.Count} {g.Key}");
 
             var platformCountSummary = string.Join(", ", platFormCounts);
