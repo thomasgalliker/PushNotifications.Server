@@ -14,6 +14,7 @@ namespace PushNotifications.Apple
         /// For a list of possible values, see <seealso cref="ApnsResponseReason"/>.
         /// </summary>
         [JsonProperty("reason", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(ApnsResponseReasonJsonConverter))]
         public ApnsResponseReason Reason { get; set; }
 
         /// <summary>

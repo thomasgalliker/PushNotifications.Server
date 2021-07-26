@@ -15,34 +15,9 @@ namespace PushNotifications.Logging
 
         public static void SetLogger(ILogger logger)
         {
-            Logger.logger = logger;
+            Logger.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public static ILogger Current => logger ?? defaultLogger.Value;
-
-        public static void Debug(string message)
-        {
-            Current.Log(LogLevel.Debug, message);
-        }
-
-        public static void Info(string message)
-        {
-            Current.Log(LogLevel.Info, message);
-        }
-
-        public static void Warning(string message)
-        {
-            Current.Log(LogLevel.Warning, message);
-        }
-
-        public static void Error(string message)
-        {
-            Current.Log(LogLevel.Error, message);
-        }
-
-        public static void Error(string message, Exception ex)
-        {
-            Error(message + $" {ex.Message} {Environment.NewLine} {ex.StackTrace}");
-        }
     }
 }

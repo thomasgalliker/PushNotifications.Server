@@ -26,5 +26,11 @@
     <ProjectReference Include="..\..\PushNotifications\PushNotifications.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Testdata\AuthKey_QWWBGJLG7F.p8">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 
 </Project>

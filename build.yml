@@ -20,6 +20,8 @@ trigger:
   paths:
     exclude:
     - README.md
+    - Images/*
+    - Samples/*
 
 variables:
   solution: 'PushNotifications.sln'

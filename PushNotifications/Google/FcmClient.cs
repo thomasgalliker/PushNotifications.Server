@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PushNotifications.Abstractions;
 using PushNotifications.Internals;
 using PushNotifications.Logging;
 
@@ -13,20 +13,33 @@ namespace PushNotifications.Google
 {
     public class FcmClient : IFcmClient
     {
+        private readonly ILogger logger;
         private readonly HttpClient httpClient;
         private readonly FcmConfiguration configuration;
 
-        public FcmClient(FcmConfiguration configuration) : this(new HttpClient(), configuration)
+        /// <summary>
+        /// Constructs a client instance with given <paramref name="options"/>
+        /// for token-based authentication (using a .p8 certificate).
+        /// </summary>
+        private FcmClient(ILogger logger, HttpClient httpClient)
         {
-        }
-
-        public FcmClient(HttpClient httpClient, FcmConfiguration configuration)
-        {
-            this.httpClient = httpClient;
-            this.configuration = configuration;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
 
             this.httpClient.DefaultRequestHeaders.UserAgent.Clear();
             this.httpClient.DefaultRequestHeaders.UserAgent.Add(HttpClientUtils.GetProductInfo(this));
+        }
+
+        public FcmClient(FcmConfiguration configuration)
+            : this(Logger.Current, new HttpClient(), configuration)
+        {
+        }
+
+        public FcmClient(ILogger logger, HttpClient httpClient, FcmConfiguration configuration)
+            : this(logger, httpClient)
+        {
+            this.configuration = configuration;
+
             this.httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "key=" + this.configuration.SenderAuthToken);
         }
 
@@ -48,18 +61,22 @@ namespace PushNotifications.Google
             var response = await this.httpClient.SendAsync(request, ct).ConfigureAwait(false);
 
             var responseContentJson = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            Logger.Debug($"SendAsync returned json content:{Environment.NewLine}{responseContentJson}");
+            this.logger.Log(LogLevel.Debug, $"SendAsync returned json content:{Environment.NewLine}{responseContentJson}");
+
+            var tokenDebuggerDisplay = fcmRequest.RegistrationIds?.Count > 0 ? $"RegistrationIds=[{string.Join(", ", fcmRequest.RegistrationIds)}]" : ($"To={fcmRequest.To ?? "null"}");
 
             if (response.StatusCode == HttpStatusCode.OK) // TODO Use if (response.IsSuccessStatusCode)
             {
-                Logger.Info($"SendAsync successfully completed");
+                this.logger.Log(LogLevel.Info, $"SendAsync to {tokenDebuggerDisplay} successfully completed");
                 var fcmResponse = JsonConvert.DeserializeObject<FcmResponse>(responseContentJson);
 
                 // Assign registration ID to each result in the list
                 fcmResponse.Results.ForPair(fcmRequest.RegistrationIds ?? new List<string> { fcmRequest.To }, (r, id) => r.RegistrationId = id);
-                
+
                 return fcmResponse;
             }
+
+            this.logger.Log(LogLevel.Error, $"SendAsync to {tokenDebuggerDisplay} failed with StatusCode={(int)response.StatusCode}({response.StatusCode})");
 
             if ((int)response.StatusCode >= 500 && (int)response.StatusCode < 600)
             {

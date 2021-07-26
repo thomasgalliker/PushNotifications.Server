@@ -2,7 +2,7 @@
 
 namespace PushNotifications.AspNetCore.Apple
 {
-    public interface IApnsClientFactory
+    internal interface IApnsClientFactory
     {
         IApnsClient GetClient();
     }

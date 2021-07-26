@@ -17,11 +17,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PushNotifications.Tests", "
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{F488D0FC-9A71-464C-BD8B-D021F7E4B55E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushNotifications.ConsoleSample", "Samples\PushNotifications.ConsoleSample\PushNotifications.ConsoleSample.csproj", "{CA3FF800-63D1-43D7-8D9D-A07DC99F9AE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PushNotifications.ConsoleSample", "Samples\PushNotifications.ConsoleSample\PushNotifications.ConsoleSample.csproj", "{CA3FF800-63D1-43D7-8D9D-A07DC99F9AE4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PushNotifications.AspNetCore", "PushNotifications.AspNetCore\PushNotifications.AspNetCore.csproj", "{CB869CAA-8E8C-4219-89CE-C2C20C8F443A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PushNotifications.AspNetCoreSample", "Samples\PushNotifications.AspNetCoreSample\PushNotifications.AspNetCoreSample.csproj", "{510794F7-F58F-43E1-88CA-C23721D6FC17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PushNotifications.AspNetCoreSample", "Samples\PushNotifications.AspNetCoreSample\PushNotifications.AspNetCoreSample.csproj", "{510794F7-F58F-43E1-88CA-C23721D6FC17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

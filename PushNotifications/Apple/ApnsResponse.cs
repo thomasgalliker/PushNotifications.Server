@@ -36,7 +36,9 @@ namespace PushNotifications.Apple
 
         public IEnumerable<string> GetTokensWithRegistrationProblem()
         {
-            if (this.Reason == ApnsResponseReason.BadDeviceToken || this.Reason == ApnsResponseReason.MissingDeviceToken)
+            if (this.Reason == ApnsResponseReason.BadDeviceToken ||
+                this.Reason == ApnsResponseReason.Unregistered || 
+                this.Reason == ApnsResponseReason.MissingDeviceToken)
             {
                 yield return this.Token;
             }

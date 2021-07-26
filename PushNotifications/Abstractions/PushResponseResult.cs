@@ -5,10 +5,17 @@ namespace PushNotifications
     [DebuggerDisplay("PushResponseResult: IsSuccessful={this.IsSuccessful}")]
     public class PushResponseResult
     {
-        public bool IsSuccessful { get; set; }
+        public PushResponseResult(IPushResponse originalResponse, string deviceToken, bool isSuccessful)
+        {
+            this.OriginalResponse = originalResponse ?? throw new System.ArgumentNullException(nameof(originalResponse));
+            this.IsSuccessful = isSuccessful;
+            this.DeviceToken = deviceToken ?? throw new System.ArgumentNullException(nameof(deviceToken));
+        }
 
-        public string DeviceToken { get; set; }
+        public IPushResponse OriginalResponse { get; }
 
-        public IPushResponse OriginalResponse { get; set; }
+        public bool IsSuccessful { get; }
+
+        public string DeviceToken { get; }
     }
 }

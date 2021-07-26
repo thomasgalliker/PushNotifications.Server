@@ -1,38 +1,27 @@
 using System.Net;
 using System.Net.Http;
-using Newtonsoft.Json;
+using PushNotifications.Internals;
 
 namespace PushNotifications.Tests.Testdata
 {
     public static class HttpResponseMessages
     {
-        public static class AppCenterPushResponses
+        public static HttpResponseMessage Success(string content = "")
         {
-            public static HttpResponseMessage Success(string notificationId)
+            return new HttpResponseMessage()
             {
-                return new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.OK,
-                    Content = new StringContent(JsonConvert.SerializeObject(new PushResponse(null)
-                    {
-                        //NotificationId = notificationId
-                    }))
-                };
-            }
-
-            public static HttpResponseMessage Unauthorized(string errorMessage, string errorCode)
-            {
-                return new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.Unauthorized,
-                    Content = new StringContent(JsonConvert.SerializeObject(new PushResponse(null)
-                    {
-                        //ErrorMessage = errorMessage,
-                        //ErrorCode = errorCode,
-                    }))
-                };
-            }
+                StatusCode = HttpStatusCode.OK,
+                Content = new JsonContent(content),
+            };
         }
 
+        public static HttpResponseMessage Unauthorized(string content = "")
+        {
+            return new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.Unauthorized,
+                Content = new StringContent(content),
+            };
+        }
     }
 }

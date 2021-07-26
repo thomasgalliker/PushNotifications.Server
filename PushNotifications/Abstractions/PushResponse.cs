@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
@@ -10,9 +11,9 @@ namespace PushNotifications
     [DebuggerDisplay("PushResponse: IsSuccessful={this.IsSuccessful}, Results={this.Results.Count}")]
     public class PushResponse : IPushResponse
     {
-        internal PushResponse(ICollection<PushResponseResult> results)
+        public PushResponse(ICollection<PushResponseResult> results)
         {
-            this.Results = results ?? new List<PushResponseResult>();
+            this.Results = results ?? throw new ArgumentNullException(nameof(results));
         }
 
         public ICollection<PushResponseResult> Results { get; }
