@@ -66,6 +66,21 @@ steps:
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
 
+- task: DownloadSecureFile@1
+  name: caCertificate
+  displayName: 'Download AuthKey'
+  inputs:
+    secureFile: 'AuthKey_QWWBGJLG7F.p8'
+   
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: |
+      AuthKey_QWWBGJLG7F.p8
+    TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Tests/Testdata'
+    OverWrite: true
+    flattenFolders: true
+
 - task: DotNetCoreCLI@2
   displayName: 'Run UnitTests'
   inputs:
