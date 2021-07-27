@@ -2,7 +2,7 @@
 
 namespace PushNotifications.Google
 {
-    public class FcmConfiguration
+    public class FcmOptions
     {
         private const string FcmSendUrl = "https://fcm.googleapis.com/fcm/send";
 
@@ -11,17 +11,17 @@ namespace PushNotifications.Google
         private string packageName;
         private string fcmUrl;
 
-        public FcmConfiguration()
+        public FcmOptions()
         {
             this.FcmUrl = FcmSendUrl;
         }
 
-        public FcmConfiguration (string senderAuthToken) : this()
+        public FcmOptions (string senderAuthToken) : this()
         {
             this.SenderAuthToken = senderAuthToken;
         }
 
-        public FcmConfiguration (string senderId, string senderAuthToken, string packageName) : this(senderAuthToken)
+        public FcmOptions (string senderId, string senderAuthToken, string packageName) : this(senderAuthToken)
         {
             this.SenderId = senderId;
             this.PackageName = packageName;

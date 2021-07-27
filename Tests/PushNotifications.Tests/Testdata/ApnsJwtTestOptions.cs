@@ -1,9 +1,8 @@
 ﻿using PushNotifications.Apple;
-using PushNotifications.Google;
 
 namespace PushNotifications.Tests.Testdata
 {
-    internal static class TestConfigurations
+    internal static class ApnsJwtTestOptions
     {
         internal static ApnsJwtOptions GetApnsJwtOptions()
         {
@@ -14,16 +13,6 @@ namespace PushNotifications.Tests.Testdata
                 KeyId = "KeyId",
                 TeamId = "TeamId",
                 UseSandbox = true,
-            };
-        }
-
-        internal static FcmConfiguration GetFcmConfiguration()
-        {
-            return new FcmConfiguration
-            {
-                SenderId = "SenderId",
-                SenderAuthToken = "SenderAuthToken",
-                PackageName = "PackageName",
             };
         }
     }

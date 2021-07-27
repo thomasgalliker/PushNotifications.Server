@@ -39,13 +39,13 @@ namespace PushNotifications.ConsoleSample
             var apnsJwtOptions = new ApnsJwtOptions();
             sectionApnsJwtOptions.Bind(apnsJwtOptions);
 
-            var sectionFcmConfiguration = config.GetSection("PushNotifications:FcmConfiguration");
-            var fcmConfiguration = new FcmConfiguration();
-            sectionFcmConfiguration.Bind(fcmConfiguration);
+            var sectionFcmOptions = config.GetSection("PushNotifications:FcmOptions");
+            var fcmOptions = new FcmOptions();
+            sectionFcmOptions.Bind(fcmOptions);
 
             IApnsClient apnsClient = new ApnsClient(apnsJwtOptions);
 
-            IFcmClient fcmClient = new FcmClient(fcmConfiguration);
+            IFcmClient fcmClient = new FcmClient(fcmOptions);
 
             // Sending push notifications to iOS devices
             SendApnsPushNotification(apnsClient).Wait();

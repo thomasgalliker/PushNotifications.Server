@@ -13,6 +13,6 @@ namespace PushNotifications.AspNetCore
 
         public ApnsJwtOptions ApnsJwtOptions { get; set; }
 
-        public FcmConfiguration FcmConfiguration { get; set; }
+        public FcmOptions FcmOptions { get; set; }
     }
 }

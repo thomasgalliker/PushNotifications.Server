@@ -34,9 +34,9 @@ namespace PushNotifications.Tests
                 .ReturnsAsync(HttpResponseMessages.Success(JsonConvert.SerializeObject(FcmResponses.GetFcmResponse_Success())))
                 .Verifiable();
 
-            var fcmConfiguration = TestConfigurations.GetFcmConfiguration();
+            var fcmOptions = FcmTestOptions.GetFcmOptions();
 
-            var fcmClient = new FcmClient(this.logger, httpClientMock.Object, fcmConfiguration);
+            var fcmClient = new FcmClient(this.logger, httpClientMock.Object, fcmOptions);
 
             var registrationId = new string('A', 152);
             var fcmRequest = new FcmRequest()

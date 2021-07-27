@@ -32,7 +32,7 @@ namespace PushNotifications.Tests.Apple
                 .ReturnsAsync(HttpResponseMessages.Success())
                 .Verifiable();
 
-            var apnsJwtOptions = TestConfigurations.GetApnsJwtOptions();
+            var apnsJwtOptions = ApnsJwtTestOptions.GetApnsJwtOptions();
 
             var apnsClient = new ApnsClient(this.logger, httpClientMock.Object, apnsJwtOptions);
 
@@ -67,7 +67,7 @@ namespace PushNotifications.Tests.Apple
                 .ReturnsAsync(HttpResponseMessages.BadRequest(JsonConvert.SerializeObject(ApnsErrorResponsePayloads.GetApnsErrorResponsePayload())))
                 .Verifiable();
 
-            var apnsJwtOptions = TestConfigurations.GetApnsJwtOptions();
+            var apnsJwtOptions = ApnsJwtTestOptions.GetApnsJwtOptions();
 
             var apnsClient = new ApnsClient(this.logger, httpClientMock.Object, apnsJwtOptions);
 
