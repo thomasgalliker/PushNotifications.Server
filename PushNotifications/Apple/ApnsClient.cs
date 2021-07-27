@@ -72,7 +72,15 @@ namespace PushNotifications.Apple
             string certContent;
             if (options.CertFilePath != null)
             {
-                certContent = File.ReadAllText(options.CertFilePath);
+                var fileInfo = new FileInfo(options.CertFilePath);
+                if (fileInfo.Exists)
+                {
+                    certContent = File.ReadAllText(options.CertFilePath);
+                }
+                else
+                {
+                    throw new FileNotFoundException($"Certificate file (CertFilePath) could not be found at: {fileInfo.FullName}");
+                }
             }
             else if (options.CertContent != null)
             {

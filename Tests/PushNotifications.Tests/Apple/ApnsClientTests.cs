@@ -22,7 +22,7 @@ namespace PushNotifications.Tests
             this.logger = new TestOutputHelperLogger<ApnsClient>(testOutputHelper);
         }
 
-        [Fact(Skip = "local test execution only!")]
+        [Fact]
         public async Task ShouldSendAsync_Succesful()
         {
             // Arrange
