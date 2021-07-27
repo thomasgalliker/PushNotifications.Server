@@ -30,6 +30,12 @@ variables:
   buildVersionPostfix: '-pre'
 
 steps:
+- task: Bash@3
+  displayName: 'Print all variables'
+  inputs:
+    targetType: 'inline'
+    script: 'env | sort'
+
 - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
   displayName: 'Set Assembly Manifest Data'
   inputs:
