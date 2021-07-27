@@ -25,7 +25,7 @@ namespace PushNotifications.AspNetCore.Apple
             }
             else
             {
-                throw new Exception("Configuration was not found");
+                throw new ArgumentException("ApnsJwtOptions cannot be found", $"{nameof(PushNotificationsOptions)}.{nameof(pushNotificationsOptions.ApnsJwtOptions)}");
             }
         }
 

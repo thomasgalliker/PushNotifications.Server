@@ -15,17 +15,17 @@ namespace PushNotifications.AspNetCore.Google
         {
             var pushNotificationsOptions = options.Value;
 
-            if (pushNotificationsOptions.FcmConfiguration is FcmConfiguration fcmConfiguration)
+            if (pushNotificationsOptions.FcmOptions is FcmOptions fcmOptions)
             {
                 var httpClient = httpClientFactory.CreateClient(pushNotificationsOptions.DisableServerCertificateValidation
                     ? "httpClient_PushNotifications_DisableCerverCertValidation"
                     : "httpClient_PushNotifications");
 
-                this.client = new FcmClient(new AspNetCoreLogger(logger), httpClient, fcmConfiguration);
+                this.client = new FcmClient(new AspNetCoreLogger(logger), httpClient, fcmOptions);
             }
             else
             {
-                throw new Exception("Configuration was not found");
+                throw new ArgumentException("FcmOptions cannot be found", $"{nameof(PushNotificationsOptions)}.{nameof(pushNotificationsOptions.FcmOptions)}");
             }
         }
 
