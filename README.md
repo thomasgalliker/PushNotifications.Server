@@ -52,10 +52,10 @@ var pushResponse = await this.pushNotificationClient.SendAsync(pushRequest);
 
 
 #### Sending Push Notifications to FCM (Android)
-In order to send FCM push notifications, you have to create a new instance of FcmClient. FcmClient requires an instance of FcmConfiguration, which contains the FCM configuration parameters which can be found on http://firebase.google.com.
-You can either create a FcmConfiguration manually (new FcmConfiguration{ ... }) or by binding from a appsettings.json file. See sample projects for more info.
+In order to send FCM push notifications, you have to create a new instance of FcmClient. FcmClient requires an instance of FcmOptions, which contains the FCM configuration parameters which can be found on http://firebase.google.com.
+You can either create a FcmOptions manually (new FcmOptions{ ... }) or by binding from a appsettings.json file. See sample projects for more info.
 ```C#
-IFcmClient fcmClient = new FcmClient(fcmConfiguration);
+IFcmClient fcmClient = new FcmClient(fcmOptions);
 ```
 Create a new FcmRequest and send it using the SendAsync method of FcmClient.
 ```C#

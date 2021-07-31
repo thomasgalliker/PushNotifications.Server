@@ -30,6 +30,12 @@ variables:
   buildVersionPostfix: '-pre'
 
 steps:
+- task: Bash@3
+  displayName: 'Print all variables'
+  inputs:
+    targetType: 'inline'
+    script: 'env | sort'
+
 - task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
   displayName: 'Set Assembly Manifest Data'
   inputs:
@@ -65,6 +71,21 @@ steps:
     msbuildArgs: ''
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
+
+- task: DownloadSecureFile@1
+  name: caCertificate
+  displayName: 'Download AuthKey'
+  inputs:
+    secureFile: 'AuthKey_QWWBGJLG7F.p8'
+   
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Agent.TempDirectory)'
+    Contents: |
+      AuthKey_QWWBGJLG7F.p8
+    TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Tests/Testdata'
+    OverWrite: true
+    flattenFolders: true
 
 - task: DotNetCoreCLI@2
   displayName: 'Run UnitTests'

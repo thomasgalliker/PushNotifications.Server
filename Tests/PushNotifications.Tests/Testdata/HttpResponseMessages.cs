@@ -15,11 +15,11 @@ namespace PushNotifications.Tests.Testdata
             };
         }
 
-        public static HttpResponseMessage Unauthorized(string content = "")
+        public static HttpResponseMessage BadRequest(string content = "")
         {
             return new HttpResponseMessage()
             {
-                StatusCode = HttpStatusCode.Unauthorized,
+                StatusCode = HttpStatusCode.BadRequest,
                 Content = new StringContent(content),
             };
         }

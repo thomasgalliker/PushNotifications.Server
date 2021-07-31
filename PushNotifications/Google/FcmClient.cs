@@ -15,7 +15,7 @@ namespace PushNotifications.Google
     {
         private readonly ILogger logger;
         private readonly HttpClient httpClient;
-        private readonly FcmConfiguration configuration;
+        private readonly FcmOptions options;
 
         /// <summary>
         /// Constructs a client instance with given <paramref name="options"/>
@@ -30,17 +30,17 @@ namespace PushNotifications.Google
             this.httpClient.DefaultRequestHeaders.UserAgent.Add(HttpClientUtils.GetProductInfo(this));
         }
 
-        public FcmClient(FcmConfiguration configuration)
-            : this(Logger.Current, new HttpClient(), configuration)
+        public FcmClient(FcmOptions options)
+            : this(Logger.Current, new HttpClient(), options)
         {
         }
 
-        public FcmClient(ILogger logger, HttpClient httpClient, FcmConfiguration configuration)
+        public FcmClient(ILogger logger, HttpClient httpClient, FcmOptions options)
             : this(logger, httpClient)
         {
-            this.configuration = configuration;
+            this.options = options;
 
-            this.httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "key=" + this.configuration.SenderAuthToken);
+            this.httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "key=" + this.options.SenderAuthToken);
         }
 
         public async Task<FcmResponse> SendAsync(FcmRequest fcmRequest, CancellationToken ct = default)
@@ -53,7 +53,7 @@ namespace PushNotifications.Google
                 fcmRequest.RegistrationIds = null;
             }
 
-            var url = this.configuration.FcmUrl;
+            var url = this.options.FcmUrl;
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             var payload = JsonConvert.SerializeObject(fcmRequest, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             request.Content = new JsonContent(payload);
