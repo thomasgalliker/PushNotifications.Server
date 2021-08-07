@@ -30,6 +30,9 @@
     <None Update="Testdata\AuthKey_QWWBGJLG7F.p8">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Testdata\ServiceAccountKeyFile.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 
