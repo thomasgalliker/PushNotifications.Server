@@ -23,7 +23,7 @@ namespace PushNotifications.Internals
 
         public override void WriteJson(JsonWriter writer, TimeSpan value, JsonSerializer serializer)
         {
-            var timeToLiveInSeconds = string.Format("{0}{SecondSuffix}", (int)value.TotalSeconds);
+            var timeToLiveInSeconds = $"{(int)value.TotalSeconds}{SecondSuffix}";
             writer.WriteValue(timeToLiveInSeconds);
         }
     }
