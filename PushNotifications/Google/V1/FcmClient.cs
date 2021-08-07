@@ -28,10 +28,6 @@ namespace PushNotifications.Google
         private readonly ServiceAccountCredential credential;
         private readonly string projectId;
 
-        /// <summary>
-        /// Constructs a client instance with given <paramref name="options"/>
-        /// for token-based authentication (using a .p8 certificate).
-        /// </summary>
         private FcmClient(ILogger logger, HttpClient httpClient)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -61,26 +57,20 @@ namespace PushNotifications.Google
 
             this.options = options ?? throw new ArgumentNullException(nameof(options));
 
-            string serviceAccountKeyFileContent;
-            if (options.ServiceAccountKeyFilePath != null)
+            if (string.IsNullOrEmpty(options.ServiceAccountKeyFilePath))
             {
-                var fileInfo = new FileInfo(options.ServiceAccountKeyFilePath);
-                if (fileInfo.Exists)
-                {
-                    serviceAccountKeyFileContent = File.ReadAllText(options.ServiceAccountKeyFilePath);
-                }
-                else
-                {
-                    throw new FileNotFoundException($"Service file (ServiceAccountKeyFilePath) could not be found at: {fileInfo.FullName}");
-                }
+                throw new ArgumentException($"ServiceAccountKeyFilePath must not be null or empty", $"{nameof(options)}.{nameof(options.ServiceAccountKeyFilePath)}");
             }
-            else if (options.Credentials != null)
+
+            string serviceAccountKeyFileContent;
+            var fileInfo = new FileInfo(options.ServiceAccountKeyFilePath);
+            if (fileInfo.Exists)
             {
-                serviceAccountKeyFileContent = options.Credentials;
+                serviceAccountKeyFileContent = File.ReadAllText(options.ServiceAccountKeyFilePath);
             }
             else
             {
-                throw new ArgumentException("Either service file path or service file contents must be provided.", nameof(options));
+                throw new FileNotFoundException($"ServiceAccountKeyFilePath could not be found at {fileInfo.FullName}");
             }
 
             this.credential = this.CreateServiceAccountCredential(new HttpClientFactory(), serviceAccountKeyFileContent);
@@ -106,7 +96,7 @@ namespace PushNotifications.Google
 
             if (serviceAccountCredential == null)
             {
-                throw new Exception($"Error creating ServiceAccountCredential");
+                throw new InvalidOperationException($"Error creating ServiceAccountCredential");
             }
 
             var initializer = new ServiceAccountCredential.Initializer(serviceAccountCredential.Id, serviceAccountCredential.TokenServerUrl)
@@ -126,10 +116,9 @@ namespace PushNotifications.Google
         {
             // Execute the Request:
             var accessToken = await this.credential.GetAccessTokenForRequestAsync(cancellationToken: cancellationToken).ConfigureAwait(false);
-
             if (accessToken == null)
             {
-                throw new Exception("Failed to obtain Access Token for Request");
+                throw new InvalidOperationException("Failed to get access token for request");
             }
 
             return accessToken;
