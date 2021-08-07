@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Newtonsoft.Json;
+using PushNotifications.Internals.JsonConverters;
 
 namespace PushNotifications.Google
 {
@@ -13,6 +14,7 @@ namespace PushNotifications.Google
         public string Message { get; set; }
 
         [JsonProperty("status")]
+        [JsonConverter(typeof(FcmErrorCodeJsonConverter))]
         public FcmErrorCode Status { get; set; }
     }
 }
