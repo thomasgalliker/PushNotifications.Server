@@ -3,15 +3,12 @@ using Microsoft.Extensions.Logging;
 using PushNotifications.Apple;
 using PushNotifications.AspNetCore.Apple;
 using PushNotifications.AspNetCore.Logging;
-
-using IFcmClientFactory = PushNotifications.AspNetCore.Google.IFcmClientFactory;
-using IFcmLegacyClientFactory = PushNotifications.AspNetCore.Google.Legacy.IFcmClientFactory;
-
-using IFcmClient = PushNotifications.Google.IFcmClient;
-using IFcmLegacyClient = PushNotifications.Google.Legacy.IFcmClient;
-
 using FcmClient = PushNotifications.Google.FcmClient;
 using FcmLegacyClient = PushNotifications.Google.Legacy.FcmClient;
+using IFcmClient = PushNotifications.Google.IFcmClient;
+using IFcmClientFactory = PushNotifications.AspNetCore.Google.IFcmClientFactory;
+using IFcmLegacyClient = PushNotifications.Google.Legacy.IFcmClient;
+using IFcmLegacyClientFactory = PushNotifications.AspNetCore.Google.Legacy.IFcmClientFactory;
 
 namespace PushNotifications.AspNetCore
 {
