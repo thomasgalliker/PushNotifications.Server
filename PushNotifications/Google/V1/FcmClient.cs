@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -62,27 +61,25 @@ namespace PushNotifications.Google
                 throw new ArgumentException($"ServiceAccountKeyFilePath must not be null or empty", $"{nameof(options)}.{nameof(options.ServiceAccountKeyFilePath)}");
             }
 
-            string serviceAccountKeyFileContent;
             var fileInfo = new FileInfo(options.ServiceAccountKeyFilePath);
             if (fileInfo.Exists)
             {
-                serviceAccountKeyFileContent = File.ReadAllText(options.ServiceAccountKeyFilePath);
+                var serviceAccountKeyFileContent = File.ReadAllText(options.ServiceAccountKeyFilePath);
+                this.credential = this.CreateServiceAccountCredential(new HttpClientFactory(), serviceAccountKeyFileContent);
+                this.projectId = GetProjectId(serviceAccountKeyFileContent);
             }
             else
             {
                 throw new FileNotFoundException($"ServiceAccountKeyFilePath could not be found at {fileInfo.FullName}");
             }
-
-            this.credential = this.CreateServiceAccountCredential(new HttpClientFactory(), serviceAccountKeyFileContent);
-            this.projectId = GetProjectId(serviceAccountKeyFileContent);
         }
 
         private static string GetProjectId(string serviceAccountKeyFileContent)
         {
-            var dict = JsonConvert.DeserializeObject<Dictionary<string, string>>(serviceAccountKeyFileContent);
-            if (dict.TryGetValue("project_id", out var value))
+            var jsonCredentialParameters = JsonConvert.DeserializeObject<JsonCredentialParameters>(serviceAccountKeyFileContent);
+            if (jsonCredentialParameters != null)
             {
-                return value;
+                return jsonCredentialParameters.ProjectId;
             }
 
             throw new Exception($"Could not read project_id from ServiceAccountKeyFilePath");

@@ -47,6 +47,7 @@ namespace PushNotifications.Tests.Apple
 
             // Assert
             apnsResponse.Should().NotBeNull();
+            apnsResponse.IsSuccessful.Should().BeTrue();
             apnsResponse.Reason.Should().BeNull();
             apnsResponse.Token.Should().Be(token);
 
@@ -82,6 +83,7 @@ namespace PushNotifications.Tests.Apple
 
             // Assert
             apnsResponse.Should().NotBeNull();
+            apnsResponse.IsSuccessful.Should().BeFalse();
             apnsResponse.Reason.Should().Be(ApnsResponseReason.Unregistered);
             apnsResponse.Token.Should().Be(token);
 
