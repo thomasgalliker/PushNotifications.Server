@@ -27,9 +27,14 @@
 		<Product>PushNotifications</Product>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 		<RootNamespace>PushNotifications</RootNamespace>
-		<PackageReleaseNotes>
-			1.0.0
-			- Initial release
+		<PackageReleaseNotes>1.0.0
+- Initial release
+- Support for APNS
+- Support for FCM Legacy HTTP API
+- Cross-platform push service
+
+2.0.0
+- Support for FCM HTTP v1 API
 		</PackageReleaseNotes>
 		<Copyright>Copyright 2021</Copyright>
 	</PropertyGroup>
