@@ -31,7 +31,7 @@ namespace PushNotifications.Tests.Google.Legacy
             // Arrange
             var httpClientMock = new HttpClientMock();
             httpClientMock.SetupSendAsync()
-                .ReturnsAsync(HttpResponseMessages.Success(JsonConvert.SerializeObject(FcmResponses.GetFcmResponse_Success())))
+                .ReturnsAsync(HttpResponseMessages.Success(JsonConvert.SerializeObject(FcmResponses.Legacy.GetFcmResponse_Success())))
                 .Verifiable();
 
             var fcmOptions = FcmTestOptions.Legacy.GetFcmOptions();
