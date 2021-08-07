@@ -3,23 +3,16 @@ using Newtonsoft.Json;
 
 namespace PushNotifications.Internals
 {
-    internal class BoolToIntJsonConverter : JsonConverter
+    internal class BoolToIntJsonConverter : JsonConverter<bool>
     {
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        public override bool ReadJson(JsonReader reader, Type objectType, bool existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
             return Convert.ToBoolean(reader.Value);
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override void WriteJson(JsonWriter writer, bool value, JsonSerializer serializer)
         {
-            bool booleanValue = (bool)value;
-
-            writer.WriteValue(Convert.ToInt32(booleanValue));
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(bool) == objectType;
+            writer.WriteValue(Convert.ToInt32(value));
         }
     }
 }
