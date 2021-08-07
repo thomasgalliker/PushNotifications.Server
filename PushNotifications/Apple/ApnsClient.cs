@@ -169,7 +169,7 @@ namespace PushNotifications.Apple
             var payload = apnsRequest.GeneratePayload();
 
             var token = (apnsRequest.Token ?? apnsRequest.VoipToken);
-            string url = (this.useSandbox ? DevelopmentEndpoint : ProductionEndpoint)
+            var url = (this.useSandbox ? DevelopmentEndpoint : ProductionEndpoint)
                 + (this.useBackupPort ? ":2197" : ":443")
                 + "/3/device/"
                 + token;
