@@ -1,4 +1,4 @@
-﻿using PushNotifications.Google;
+﻿using PushNotifications.Google.Legacy;
 
 namespace PushNotifications.Tests.Testdata
 {

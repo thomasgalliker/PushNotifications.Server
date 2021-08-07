@@ -6,15 +6,15 @@ namespace PushNotifications.Abstractions
     {
         internal NotificationException (string message, IPushRequest notification) : base (message)
         {
-            this.Notification = notification;
+            this.PushRequest = notification;
         }
 
         internal NotificationException (string message, IPushRequest notification, Exception innerException)
             : base (message, innerException)
         {
-            this.Notification = notification;
+            this.PushRequest = notification;
         }
 
-        public IPushRequest Notification { get; }
+        public IPushRequest PushRequest { get; }
     }
 }

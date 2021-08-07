@@ -3,7 +3,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
-namespace PushNotifications.Google
+namespace PushNotifications.Google.Legacy
 {
     [DebuggerDisplay("{DebuggerDisplay,nq}")]
     public class FcmRequest : IPushRequest
@@ -20,7 +20,7 @@ namespace PushNotifications.Google
         {
             get
             {
-                var tokenDebuggerDisplay = this.RegistrationIds?.Count > 0 ? $"({this.RegistrationIds.Count})" : (this.To ?? "null");
+                var tokenDebuggerDisplay = this.RegistrationIds?.Count > 0 ? $"({this.RegistrationIds.Count})" : this.To ?? "null";
                 return string.Format("FcmRequest: Token={0}", tokenDebuggerDisplay);
             }
         }

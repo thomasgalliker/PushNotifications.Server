@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using PushNotifications.Apple;
 using PushNotifications.ConsoleSample.Logging;
-using PushNotifications.Google;
+using PushNotifications.Google.Legacy;
 using PushNotifications.Logging;
 
 namespace PushNotifications.ConsoleSample
@@ -39,7 +38,7 @@ namespace PushNotifications.ConsoleSample
             var apnsJwtOptions = new ApnsJwtOptions();
             sectionApnsJwtOptions.Bind(apnsJwtOptions);
 
-            var sectionFcmOptions = config.GetSection("PushNotifications:FcmOptions");
+            var sectionFcmOptions = config.GetSection("PushNotifications:FcmLegacyOptions");
             var fcmOptions = new FcmOptions();
             sectionFcmOptions.Bind(fcmOptions);
 

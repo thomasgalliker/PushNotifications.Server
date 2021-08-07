@@ -6,21 +6,23 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
-using PushNotifications.Google;
+using PushNotifications.Google.Legacy;
 using PushNotifications.Tests.Mocks;
 using PushNotifications.Tests.Testdata;
 using PushNotifications.Tests.Utils;
 using Xunit;
 using Xunit.Abstractions;
+using FcmClient = PushNotifications.Google.Legacy.FcmClient;
+using FcmOptions = PushNotifications.Google.Legacy.FcmOptions;
 
-namespace PushNotifications.Tests
+namespace PushNotifications.Tests.Google.Legacy
 {
     [Trait("Category", "UnitTests")]
-    public class FcmClientTests
+    public class FcmClientLegacyTests
     {
         private readonly TestOutputHelperLogger<FcmClient> logger;
 
-        public FcmClientTests(ITestOutputHelper testOutputHelper)
+        public FcmClientLegacyTests(ITestOutputHelper testOutputHelper)
         {
             this.logger = new TestOutputHelperLogger<FcmClient>(testOutputHelper);
         }
@@ -67,7 +69,7 @@ namespace PushNotifications.Tests
                 request => request.Method == HttpMethod.Post &&
                            request.RequestUri == new Uri("https://fcm.googleapis.com/fcm/send"),
                            Times.Exactly(1));
-            
+
             httpClientMock.VerifyNoOtherCalls();
         }
     }

@@ -15,12 +15,12 @@ namespace PushNotifications.AspNetCore.Apple
         {
             var pushNotificationsOptions = options.Value;
 
+            var httpClient = httpClientFactory.CreateClient(pushNotificationsOptions.DisableServerCertificateValidation
+                ? "httpClient_PushNotifications_DisableCerverCertValidation"
+                : "httpClient_PushNotifications");
+
             if (pushNotificationsOptions.ApnsJwtOptions is ApnsJwtOptions apnsJwtOptions)
             {
-                var httpClient = httpClientFactory.CreateClient(pushNotificationsOptions.DisableServerCertificateValidation
-                    ? "httpClient_PushNotifications_DisableCerverCertValidation"
-                    : "httpClient_PushNotifications");
-
                 this.client = new ApnsClient(new AspNetCoreLogger(logger), httpClient, apnsJwtOptions);
             }
             else

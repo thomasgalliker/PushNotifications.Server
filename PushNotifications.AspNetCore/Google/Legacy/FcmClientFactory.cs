@@ -3,16 +3,16 @@ using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PushNotifications.AspNetCore.Logging;
-using PushNotifications.Google;
+using PushNotifications.Google.Legacy;
 
-namespace PushNotifications.AspNetCore.Google
+namespace PushNotifications.AspNetCore.Google.Legacy
 {
     internal class FcmClientFactory : IFcmClientFactory
     {
         private readonly ILogger<FcmClient> logger;
         private readonly IHttpClientFactory httpClientFactory;
         private readonly PushNotificationsOptions pushNotificationsOptions;
-        private FcmClient client;
+        private IFcmClient client;
 
         public FcmClientFactory(ILogger<FcmClient> logger, IHttpClientFactory httpClientFactory, IOptions<PushNotificationsOptions> options)
         {
@@ -28,7 +28,7 @@ namespace PushNotifications.AspNetCore.Google
                 return fcmClient;
             }
 
-            throw new ArgumentException($"{nameof(this.pushNotificationsOptions.FcmOptions)} cannot be found", $"{nameof(PushNotificationsOptions)}.{nameof(this.pushNotificationsOptions.FcmOptions)}");
+            throw new ArgumentException($"{nameof(this.pushNotificationsOptions.FcmLegacyOptions)} cannot be found", $"{nameof(PushNotificationsOptions)}.{nameof(this.pushNotificationsOptions.FcmLegacyOptions)}");
         }
 
         public bool TryGet(out IFcmClient fcmClient)
@@ -43,7 +43,7 @@ namespace PushNotifications.AspNetCore.Google
                 ? "httpClient_PushNotifications_DisableCerverCertValidation"
                 : "httpClient_PushNotifications");
 
-            if (this.pushNotificationsOptions.FcmOptions is FcmOptions fcmOptions)
+            if (this.pushNotificationsOptions.FcmLegacyOptions is FcmOptions fcmOptions)
             {
                 this.client = new FcmClient(new AspNetCoreLogger(this.logger), httpClient, fcmOptions);
                 fcmClient = this.client;

@@ -1,12 +1,12 @@
 ﻿using System.Runtime.Serialization;
 
-namespace PushNotifications.Google
+namespace PushNotifications.Google.Legacy
 {
     public enum FcmNotificationPriority
     {
-        [EnumMember (Value="normal")]
+        [EnumMember(Value = "normal")]
         Normal = 5,
-        [EnumMember (Value="high")]
+        [EnumMember(Value = "high")]
         High = 10
     }
 }

@@ -5,7 +5,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using PushNotifications.Apple;
 using PushNotifications.Google;
+using PushNotifications.Google.Legacy;
 using PushNotifications.Logging;
+using FcmLegacyRequest = PushNotifications.Google.Legacy.FcmRequest;
+using FcmLegacyResponse = PushNotifications.Google.Legacy.FcmResponse;
+using FcmRequest = PushNotifications.Google.FcmRequest;
+using FcmResponse = PushNotifications.Google.FcmResponse;
+using IFcmClient = PushNotifications.Google.IFcmClient;
+using IFcmLegacyClient = PushNotifications.Google.Legacy.IFcmClient;
 
 namespace PushNotifications
 {
@@ -16,6 +23,7 @@ namespace PushNotifications
     {
         private readonly ILogger logger;
         private readonly IFcmClient fcmClient;
+        private readonly IFcmLegacyClient fcmLegacyClient;
         private readonly IApnsClient apnsClient;
 
         public PushNotificationClient(IFcmClient fcmClient, IApnsClient apnsClient)
@@ -30,10 +38,23 @@ namespace PushNotifications
             this.apnsClient = apnsClient ?? throw new ArgumentNullException(nameof(apnsClient));
         }
 
+        public PushNotificationClient(IFcmLegacyClient fcmClient, IApnsClient apnsClient)
+            : this(Logger.Current, fcmClient, apnsClient)
+        {
+        }
+
+        public PushNotificationClient(ILogger logger, IFcmLegacyClient fcmLegacyClient, IApnsClient apnsClient)
+        {
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.fcmLegacyClient = fcmLegacyClient ?? throw new ArgumentNullException(nameof(fcmLegacyClient));
+            this.apnsClient = apnsClient ?? throw new ArgumentNullException(nameof(apnsClient));
+        }
+
         public async Task<PushResponse> SendAsync(PushRequest pushRequest, CancellationToken ct = default)
         {
             var apnsResponses = new List<ApnsResponse>();
             var fcmResponses = new List<FcmResponse>();
+            var fcmLegacyResponses = new List<FcmLegacyResponse>();
 
             var apnsPushDevices = pushRequest.Devices.Where(d => d.Platform == RuntimePlatform.iOS).ToList();
             var fcmPushDevices = pushRequest.Devices.Where(d => d.Platform == RuntimePlatform.Android).ToList();
@@ -62,35 +83,67 @@ namespace PushNotifications
                         apnsRequest.AddCustomProperty(item.Key, item.Value);
                     }
 
-    var apnsResponse = await this.apnsClient.SendAsync(apnsRequest, ct);
-    apnsResponses.Add(apnsResponse);
+                    var apnsResponse = await this.apnsClient.SendAsync(apnsRequest, ct);
+                    apnsResponses.Add(apnsResponse);
                 }
             }
 
             // Handle FCM push notifications
             if (fcmPushDevices.Any())
-{
-    var fcmRequest = new FcmRequest()
-    {
-        RegistrationIds = fcmPushDevices.Select(d => d.DeviceToken).ToList(),
-        Notification = new FcmNotification
-        {
-            Title = pushRequest.Content.Title,
-            Body = pushRequest.Content.Body,
-        },
-        Data = pushRequest.Content.CustomData
-    };
+            {
+                if (this.fcmClient != null)
+                {
+                    foreach (var pushDevice in fcmPushDevices)
+                    {
+                        var fcmRequest = new FcmRequest()
+                        {
+                            Message = new Message
+                            {
+                                Token = pushDevice.DeviceToken,
+                                Notification = new Notification
+                                {
+                                    Title = pushRequest.Content.Title,
+                                    Body = pushRequest.Content.Body,
+                                },
+                                Data = pushRequest.Content.CustomData
+                            },
+                            ValidateOnly = false,
+                        };
 
-    var fcmResponse = await this.fcmClient.SendAsync(fcmRequest, ct);
-    fcmResponses.Add(fcmResponse);
-}
+                        var fcmResponse = await this.fcmClient.SendAsync(fcmRequest, ct);
+                        fcmResponses.Add(fcmResponse);
+                    }
+                }
+                else if (this.fcmLegacyClient != null)
+                {
+                    var fcmRequest = new FcmLegacyRequest()
+                    {
+                        RegistrationIds = fcmPushDevices.Select(d => d.DeviceToken).ToList(),
+                        Notification = new FcmNotification
+                        {
+                            Title = pushRequest.Content.Title,
+                            Body = pushRequest.Content.Body,
+                        },
+                        Data = pushRequest.Content.CustomData
+                    };
 
-// Map platform-specific responses to platform-agnostic response
-var apnsPushResults = apnsResponses.Select(r => new PushResponseResult(r, r.Token, r.IsSuccessful));
+                    var fcmResponse = await this.fcmLegacyClient.SendAsync(fcmRequest, ct);
+                    fcmLegacyResponses.Add(fcmResponse);
+                }
+                else
+                {
+                    throw new InvalidOperationException("Neither an FcmClient nor a legacy FcmClient is available; this situation should not happen!");
+                }
+            }
 
-var fcmPushResults = fcmResponses.SelectMany(r => r.Results.Select(x => new PushResponseResult(r, x.RegistrationId, isSuccessful: x.Error == null)));
+            // Map platform-specific responses to platform-agnostic response
+            var apnsPushResults = apnsResponses.Select(r => new PushResponseResult(r, r.Token, r.IsSuccessful));
+            
+            var fcmPushResults = fcmResponses.Select(r => new PushResponseResult(r, r.Token, r.IsSuccessful));
 
-return new PushResponse(apnsPushResults.Union(fcmPushResults).ToList());
+            var fcmLegacyPushResults = fcmLegacyResponses.SelectMany(r => r.Results.Select(m => new PushResponseResult(r, m.RegistrationId, isSuccessful: m.Error == null)));
+
+            return new PushResponse(apnsPushResults.Union(fcmPushResults).Union(fcmLegacyPushResults).ToList());
         }
     }
 }

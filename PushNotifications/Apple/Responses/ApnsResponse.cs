@@ -24,14 +24,17 @@ namespace PushNotifications.Apple
             this.IsSuccessful = isSuccessful;
         }
 
-        internal static ApnsResponse Successful(string token)
+        public ApnsResponse(string token)
         {
-            return new ApnsResponse(token, null, true);
+            this.Token = token;
+            this.IsSuccessful = true;
         }
-
-        internal static ApnsResponse Error(string token, ApnsResponseReason reason)
+        
+        public ApnsResponse(string token, ApnsResponseReason reason)
         {
-            return new ApnsResponse(token, reason, false);
+            this.Token = token;
+            this.Reason = reason;
+            this.IsSuccessful = false;
         }
 
         public IEnumerable<string> GetTokensWithRegistrationProblem()

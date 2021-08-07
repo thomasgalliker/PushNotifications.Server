@@ -12,7 +12,7 @@
     "IIS Express (APNS)": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "pushnotification/send/apns",
+      "launchUrl": "apns/send",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -20,7 +20,15 @@
     "IIS Express (FCM)": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "pushnotification/send/fcm",
+      "launchUrl": "fcm/send",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express (FCM Legacy)": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "fcmlegacy/send",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
@@ -28,7 +36,7 @@
     "IIS Express (X)": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "pushnotification/send/x",
+      "launchUrl": "x/send",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

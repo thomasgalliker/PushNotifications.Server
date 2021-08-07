@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace PushNotifications.Google
+namespace PushNotifications.Google.Legacy
 {
     public class FcmNotification
     {

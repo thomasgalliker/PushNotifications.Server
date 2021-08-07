@@ -11,7 +11,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using PushNotifications.Abstractions;
 using PushNotifications.Internals;
 using PushNotifications.Logging;
 
@@ -152,6 +151,11 @@ namespace PushNotifications.Apple
 
         public async Task<ApnsResponse> SendAsync(ApnsRequest apnsRequest, CancellationToken ct = default)
         {
+            if (apnsRequest == null)
+            {
+                throw new ArgumentNullException(nameof(apnsRequest));
+            }
+
             this.logger.Log(LogLevel.Debug, $"SendAsync to Token={apnsRequest.Token} started...");
 
             if (this.useCert)
@@ -215,13 +219,13 @@ namespace PushNotifications.Apple
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 this.logger.Log(LogLevel.Info, $"SendAsync to Token={apnsRequest.Token} successfully completed");
-                return ApnsResponse.Successful(apnsRequest.Token);
+                return new ApnsResponse(apnsRequest.Token);
             }
 
             var errorPayload = JsonConvert.DeserializeObject<ApnsErrorResponsePayload>(responseContentJson);
-            this.logger.Log(LogLevel.Error, $"SendAsync to Token={apnsRequest.Token} failed with StatusCode={(int)response.StatusCode}({response.StatusCode}), Reason={errorPayload.Reason}");
+            this.logger.Log(LogLevel.Error, $"SendAsync to Token={apnsRequest.Token} failed with StatusCode={(int)response.StatusCode} ({response.StatusCode}), Reason={errorPayload.Reason}");
 
-            return ApnsResponse.Error(apnsRequest.Token, errorPayload.Reason);
+            return new ApnsResponse(apnsRequest.Token, errorPayload.Reason);
         }
 
         public static ApnsClient CreateUsingCert(X509Certificate2 cert)
