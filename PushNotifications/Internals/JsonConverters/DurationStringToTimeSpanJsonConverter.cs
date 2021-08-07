@@ -1,30 +1,28 @@
-﻿
-using System;
+﻿using System;
 using Newtonsoft.Json;
 
 namespace PushNotifications.Internals
 {
-    internal class DurationStringToTimeSpanJsonConverter : JsonConverter
+    internal class DurationStringToTimeSpanJsonConverter : JsonConverter<TimeSpan>
     {
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        public override TimeSpan ReadJson(JsonReader reader, Type objectType, TimeSpan existingValue, bool hasExistingValue, JsonSerializer serializer)
         {
-            if (!(value is TimeSpan timeSpan))
+            if (reader.Value is string stringValue)
             {
-                return;
+                var indexOfS = stringValue.IndexOf("s");
+                if (indexOfS > 0 && int.TryParse(stringValue.Substring(0, indexOfS), out var parsedValue))
+                {
+                    return TimeSpan.FromSeconds(parsedValue);
+                }
             }
 
-            var timeToLiveInSeconds = string.Format("{0}s", (int)timeSpan.TotalSeconds);
+            return TimeSpan.Zero;
+        }
+
+        public override void WriteJson(JsonWriter writer, TimeSpan value, JsonSerializer serializer)
+        {
+            var timeToLiveInSeconds = string.Format("{0}s", (int)value.TotalSeconds);
             writer.WriteValue(timeToLiveInSeconds);
-        }
-
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override bool CanConvert(Type objectType)
-        {
-            return typeof(TimeSpan?) == objectType;
         }
     }
 }

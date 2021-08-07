@@ -35,5 +35,9 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Apple\Requests\" />
+  </ItemGroup>
+
 
 </Project>

@@ -9,6 +9,7 @@ namespace PushNotifications.Google
     [JsonObject]
     public class AndroidMessagePriority : IEquatable<AndroidMessagePriority>
     {
+        public static readonly AndroidMessagePriority Unknown = new AndroidMessagePriority();
         public static readonly AndroidMessagePriority Normal = new AndroidMessagePriority("NORMAL");
         public static readonly AndroidMessagePriority High = new AndroidMessagePriority("HIGH");
 

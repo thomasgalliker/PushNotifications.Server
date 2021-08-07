@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using PushNotifications.Internals;
+using PushNotifications.Internals.JsonConverters;
 
 namespace PushNotifications.Google
 {
@@ -14,6 +15,7 @@ namespace PushNotifications.Google
         public string CollapseKey { get; set; }
 
         [JsonProperty("priority")]
+        [JsonConverter(typeof(AndroidMessagePriorityJsonConverter))]
         public AndroidMessagePriority Priority { get; set; }
 
         [JsonProperty("ttl")]
