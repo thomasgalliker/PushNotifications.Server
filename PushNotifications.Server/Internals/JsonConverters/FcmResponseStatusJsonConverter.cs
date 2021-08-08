@@ -13,7 +13,7 @@ namespace PushNotifications.Server.Internals.JsonConverters
                 return new FcmResponseStatus(stringValue);
             }
 
-            return FcmResponseStatus.Unknown;
+            return null;
         }
 
         public override void WriteJson(JsonWriter writer, FcmResponseStatus value, JsonSerializer serializer)
