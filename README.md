@@ -13,10 +13,10 @@ Use the following command to install PushNotifications.Server using NuGet packag
 You can use this library in any .NET project which is compatible to .NET Standard 2.0 and higher.
 
 ### ASP.NET Core Integration
-For a smooth integration with ASP.NET Core projects, use following NuGet package: https://www.nuget.org/packages/PushNotifications.AspNetCore.Server
-Use the following command to install PushNotifications.AspNetCore.Server using NuGet package manager console:
+For a smooth integration with ASP.NET Core projects, use following NuGet package: https://www.nuget.org/packages/PushNotifications.Server.AspNetCore
+Use the following command to install PushNotifications.Server.AspNetCore using NuGet package manager console:
 
-    PM> Install-Package PushNotifications.AspNetCore.Server
+    PM> Install-Package PushNotifications.Server.AspNetCore
 
 You can use this library in any ASP.NET Core project which is compatible to .NET Core 3.1 and higher.
 
