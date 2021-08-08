@@ -3,9 +3,9 @@ using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PushNotifications.Server.Apple;
-using PushNotifications.Server.Server.AspNetCore.Logging;
+using PushNotifications.Server.AspNetCore.Logging;
 
-namespace PushNotifications.Server.Server.AspNetCore.Apple
+namespace PushNotifications.Server.AspNetCore.Apple
 {
     internal class ApnsClientFactory : IApnsClientFactory
     {

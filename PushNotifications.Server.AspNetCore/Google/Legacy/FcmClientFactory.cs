@@ -2,10 +2,10 @@
 using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using PushNotifications.Server.Server.AspNetCore.Logging;
+using PushNotifications.Server.AspNetCore.Logging;
 using PushNotifications.Server.Google.Legacy;
 
-namespace PushNotifications.Server.Server.AspNetCore.Google.Legacy
+namespace PushNotifications.Server.AspNetCore.Google.Legacy
 {
     internal class FcmClientFactory : IFcmClientFactory
     {

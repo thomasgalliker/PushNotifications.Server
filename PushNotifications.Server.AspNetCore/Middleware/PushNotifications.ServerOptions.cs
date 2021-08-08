@@ -2,7 +2,7 @@
 using PushNotifications.Server.Google;
 using FcmLegacyOptions = PushNotifications.Server.Google.Legacy.FcmOptions;
 
-namespace PushNotifications.Server.Server.AspNetCore
+namespace PushNotifications.Server.AspNetCore
 {
     public class PushNotificationsOptions
     {
