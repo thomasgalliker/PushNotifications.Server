@@ -2,16 +2,16 @@
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using PushNotifications.Server.Apple;
-using PushNotifications.Server.Server.AspNetCore.Apple;
+using PushNotifications.Server.AspNetCore.Apple;
 
-using FcmClientFactory = PushNotifications.Server.Server.AspNetCore.Google.FcmClientFactory;
-using FcmLegacyClientFactory = PushNotifications.Server.Server.AspNetCore.Google.Legacy.FcmClientFactory;
+using FcmClientFactory = PushNotifications.Server.AspNetCore.Google.FcmClientFactory;
+using FcmLegacyClientFactory = PushNotifications.Server.AspNetCore.Google.Legacy.FcmClientFactory;
 using IFcmClient = PushNotifications.Server.Google.IFcmClient;
-using IFcmClientFactory = PushNotifications.Server.Server.AspNetCore.Google.IFcmClientFactory;
+using IFcmClientFactory = PushNotifications.Server.AspNetCore.Google.IFcmClientFactory;
 using IFcmLegacyClient = PushNotifications.Server.Google.Legacy.IFcmClient;
-using IFcmLegacyClientFactory = PushNotifications.Server.Server.AspNetCore.Google.Legacy.IFcmClientFactory;
+using IFcmLegacyClientFactory = PushNotifications.Server.AspNetCore.Google.Legacy.IFcmClientFactory;
 
-namespace PushNotifications.Server.Server.AspNetCore
+namespace PushNotifications.Server.AspNetCore
 {
     public static class ServiceCollectionExtensions
     {

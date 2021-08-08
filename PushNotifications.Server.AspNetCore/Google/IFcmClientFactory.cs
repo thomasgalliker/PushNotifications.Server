@@ -1,6 +1,6 @@
 ﻿using PushNotifications.Server.Google;
 
-namespace PushNotifications.Server.Server.AspNetCore.Google
+namespace PushNotifications.Server.AspNetCore.Google
 {
     internal interface IFcmClientFactory
     {

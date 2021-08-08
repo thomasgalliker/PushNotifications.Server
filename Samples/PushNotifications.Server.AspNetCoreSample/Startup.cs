@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using PushNotifications.Server.Server.AspNetCore;
+using PushNotifications.Server.AspNetCore;
 
 namespace PushNotifications.Server.Server.AspNetCoreSample
 {

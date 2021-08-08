@@ -1,4 +1,4 @@
-﻿namespace PushNotifications.Server.Server.AspNetCore
+﻿namespace PushNotifications.Server.AspNetCore
 {
     internal interface IPushNotificationClientFactory
     {
