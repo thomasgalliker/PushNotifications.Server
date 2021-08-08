@@ -35,20 +35,28 @@ steps:
   inputs:
     targetType: 'inline'
     script: 'env | sort'
-
-- task: bleddynrichards.Assembly-Info-Task.Assembly-Info-NetCore.Assembly-Info-NetCore@2
-  displayName: 'Set Assembly Manifest Data'
+   
+- task: Assembly-Info-NetCore@2
+  displayName: 'Update Assembly Info'
   inputs:
+    Path: '$(Build.SourcesDirectory)'
     FileNames: |
-     PushNotifications.Server.csproj
-     PushNotifications.Server.AspNetCore.csproj
+      **/*.csproj
     InsertAttributes: true
+    FileEncoding: 'auto'
+    WriteBOM: false
     Product: 'PushNotifications.Server'
     Description: ''
     Company: 'superdev GmbH'
     Copyright: '(c) $(date:YYYY) superdev GmbH'
     VersionNumber: '$(Build.BuildNumber)'
     FileVersionNumber: '$(Build.BuildNumber)'
+    InformationalVersion: '$(Build.BuildNumber)'
+    PackageVersion: '$(Build.BuildNumber)'
+    LogLevel: 'verbose'
+    FailOnWarning: false
+    DisableTelemetry: false'
+
 
 - task: NuGetToolInstaller@0
   displayName: 'Use NuGet 5.x'
