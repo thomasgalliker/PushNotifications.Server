@@ -26,19 +26,20 @@ You can use this library in any ASP.NET Core project which is compatible to .NET
 The following sections document basic use cases of this library. The following code excerpts can also be found in the [sample applications](https://github.com/thomasgalliker/PushNotifications/tree/develop/Samples).
 
 #### Cross-Platform Push Notifications
-PushNotificationClient is used to send cross-platform push notifications. In order to create a new instance of PushNotificationClient, you have to create an instance of FcmClient and ApnsClient and pass it into PushNotificationClient.
+The goal of cross-platform push notification is to provide an abstracted request/response model in order to serve all unterlying platforms. `PushNotificationClient` is the implementation class of such a cross-platform push notification client. In order to create a new instance of PushNotificationClient, you have to create an instance of FcmClient and ApnsClient and pass it into PushNotificationClient.
 ```C#
 var pushNotificationClient = new PushNotificationClient(fcmClient, apnsClient);
 ```
-##### Sending PushRequests
-Cross-platform push requests are abstracted using class PushRequest. Create a new PushRequest and send it using the SendAsync method of PushNotificationClient.
+ 
+###### Sending PushRequests to all platforms
+Cross-platform push requests are abstracted using class `PushRequest`. Create a new `PushRequest` and send it using the `SendAsync` method of `PushNotificationClient`.
 ```C#
 var pushRequest = new PushRequest
 {
     Content = new PushContent
     {
         Title = "Test Message",
-        Body = $"Message from PushNotifications.AspNetCore.ServerSample @ {DateTime.Now}",
+        Body = $"Message @ {DateTime.Now}",
         CustomData = new Dictionary<string, string>
         {
             { "key", "value" }
@@ -50,10 +51,57 @@ var pushRequest = new PushRequest
 var pushResponse = await this.pushNotificationClient.SendAsync(pushRequest);
 ```
 
+#### APNS Push Notifications (iOS / Apple)
+Sending push notifications to iOS devices is pretty easy. Create a new instance of `ApnsClient`.
+```C#
+IApnsClient apnsClient = new ApnsClient(apnsJwtOptions);
+```
+Then, create an `ApnsRequest` with some title and body and send it out using `SendAsync` method.
+```C#
+var apnsRequest = new ApnsRequest(ApplePushType.Alert)
+    .AddToken(token)
+    .AddAlert("Test Message", $"Message @ {DateTime.Now}")
+    .AddCustomProperty("key", "value");
 
-#### Sending Push Notifications to FCM (Android)
+var apnsResponse = await this.apnsClient.SendAsync(apnsRequest);
+```
+
+#### FCM Push Notifications (Android / Google)
 In order to send FCM push notifications, you have to create a new instance of FcmClient. FcmClient requires an instance of FcmOptions, which contains the FCM configuration parameters which can be found on http://firebase.google.com.
-You can either create a FcmOptions manually (new FcmOptions{ ... }) or by binding from a appsettings.json file. See sample projects for more info.
+You can either create a FcmOptions manually (`new FcmOptions{ ... }`) or by binding from a appsettings.json file. See sample projects for more info.
+
+This library supports both, the old "legacy" FcmClient as well as the new "v1" FcmClient. Check the [firebase migration documentations](https://firebase.google.com/docs/cloud-messaging/migrate-v1) before before selecting one or the other.
+
+###### Sending Push Notifications using FcmClient (HTTP v1 API)
+
+```C#
+IFcmClient fcmClient = new FcmClient(fcmOptions);
+```
+Create a new FcmRequest and send it using the SendAsync method of FcmClient.
+```C#
+var fcmRequest = new FcmRequest()
+{
+    Message = new Message
+    {
+        Token = token,
+        Notification = new Notification
+        {
+            Title = "Test Message",
+            Body = $"Message @ {DateTime.Now}",
+        },
+        Data = new Dictionary<string, string>
+        {
+            { "key", "value" }
+        },
+    },
+    ValidateOnly = false,
+};
+
+var fcmResponse = await this.fcmClient.SendAsync(fcmRequest);
+```
+
+###### Sending Push Notifications using FcmClient (Legacy HTTP API)
+All legacy FCM client related code can be found in namespace `PushNotifications.Server.Google.Legacy`. The way the legacy FcmClient works is similar to the v1 FcmClient. The main differences can be found in the `FcmOptions` as well as in the request/response model.
 ```C#
 IFcmClient fcmClient = new FcmClient(fcmOptions);
 ```
@@ -65,7 +113,7 @@ var fcmRequest = new FcmRequest()
     Notification = new FcmNotification
     {
         Title = "Test Message",
-        Body = $"Message from PushNotifications.AspNetCore.ServerSample @ {DateTime.Now}",
+        Body = $"Message @ {DateTime.Now}",
     },
     Data = new Dictionary<string, string>
     {
@@ -74,17 +122,6 @@ var fcmRequest = new FcmRequest()
 };
 
 var fcmResponse = await this.fcmClient.SendAsync(fcmRequest);
-```
-
-#### Sending Push Notifications to APNS (iOS)
-tbd
-```C#
-var apnsRequest = new ApnsRequest(ApplePushType.Alert)
-    .AddToken(token)
-    .AddAlert("Test Message", $"Message from PushNotifications.AspNetCore.ServerSample @ {DateTime.Now}")
-    .AddCustomProperty("key", "value");
-
-var apnsResponse = await this.apnsClient.SendAsync(apnsRequest);
 ```
 
 ### Links
