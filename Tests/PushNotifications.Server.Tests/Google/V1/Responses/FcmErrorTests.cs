@@ -33,7 +33,7 @@ namespace PushNotifications.Server.Tests.Google
                 {
                     Code = 0,
                     Message = null,
-                    Status = FcmErrorCode.Unknown
+                    Status = null
                 });
                 this.Add(new FcmError
                 {
