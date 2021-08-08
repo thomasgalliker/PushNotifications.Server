@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using PushNotifications.Internals.JsonConverters;
 
 namespace PushNotifications.Google.Legacy
 {
@@ -23,6 +24,7 @@ namespace PushNotifications.Google.Legacy
         /// The possible values can be found in <seealso cref="FcmResponseStatus"/>.
         /// </summary>
         [JsonProperty("error", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonConverter(typeof(FcmResponseStatusJsonConverter))]
         public FcmResponseStatus Error { get; set; }
     }
 }
