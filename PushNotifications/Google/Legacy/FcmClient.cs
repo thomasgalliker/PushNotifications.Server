@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -9,10 +9,16 @@ using Newtonsoft.Json;
 using PushNotifications.Internals;
 using PushNotifications.Logging;
 
-namespace PushNotifications.Google
+namespace PushNotifications.Google.Legacy
 {
+    /// <summary>
+    /// Sends push messages to Firebase Cloud Messaging using the FCM legacy HTTP API.
+    /// </summary>
+    [DebuggerDisplay("FcmClient: {FcmClient.ApiName}")]
     public class FcmClient : IFcmClient
     {
+        public const string ApiName = "FCM legacy HTTP API";
+
         private readonly ILogger logger;
         private readonly HttpClient httpClient;
         private readonly FcmOptions options;
@@ -38,13 +44,28 @@ namespace PushNotifications.Google
         public FcmClient(ILogger logger, HttpClient httpClient, FcmOptions options)
             : this(logger, httpClient)
         {
-            this.options = options;
+            if (logger is null)
+            {
+                throw new ArgumentNullException(nameof(logger));
+            }
+
+            if (httpClient is null)
+            {
+                throw new ArgumentNullException(nameof(httpClient));
+            }
+
+            this.options = options ?? throw new ArgumentNullException(nameof(options));
 
             this.httpClient.DefaultRequestHeaders.TryAddWithoutValidation("Authorization", "key=" + this.options.SenderAuthToken);
         }
 
         public async Task<FcmResponse> SendAsync(FcmRequest fcmRequest, CancellationToken ct = default)
         {
+            if (fcmRequest == null)
+            {
+                throw new ArgumentNullException(nameof(fcmRequest));
+            }
+
             // If 'To' was used instead of RegistrationIds, let's make RegistrationId's null
             // so we don't serialize an empty array for this property
             // otherwise, google will complain that we specified both instead
@@ -53,7 +74,7 @@ namespace PushNotifications.Google
                 fcmRequest.RegistrationIds = null;
             }
 
-            var url = this.options.FcmUrl;
+            var url = "https://fcm.googleapis.com/fcm/send";
             var request = new HttpRequestMessage(HttpMethod.Post, url);
             var payload = JsonConvert.SerializeObject(fcmRequest, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             request.Content = new JsonContent(payload);
@@ -76,7 +97,7 @@ namespace PushNotifications.Google
                 return fcmResponse;
             }
 
-            this.logger.Log(LogLevel.Error, $"SendAsync to {tokenDebuggerDisplay} failed with StatusCode={(int)response.StatusCode}({response.StatusCode})");
+            this.logger.Log(LogLevel.Error, $"SendAsync to {tokenDebuggerDisplay} failed with StatusCode={(int)response.StatusCode} ({response.StatusCode})");
 
             if ((int)response.StatusCode >= 500 && (int)response.StatusCode < 600)
             {

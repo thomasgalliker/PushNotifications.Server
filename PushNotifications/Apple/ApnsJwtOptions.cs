@@ -34,7 +34,6 @@ namespace PushNotifications.Apple
         /// Contents of a .p8 certificate containing a key to be used to encrypt JWT. Can include BEGIN/END headers, line breaks, etc.
         /// If specified, <see cref="CertContent"/> must be null.
         /// </summary>
-
         public string CertContent
         {
             get => this.certContent;

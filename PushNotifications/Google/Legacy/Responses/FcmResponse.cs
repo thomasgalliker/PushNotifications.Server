@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace PushNotifications.Google
+namespace PushNotifications.Google.Legacy
 {
     [DebuggerDisplay("FcmResponse: IsSuccessful={this.IsSuccessful}")]
     public class FcmResponse : IPushResponse

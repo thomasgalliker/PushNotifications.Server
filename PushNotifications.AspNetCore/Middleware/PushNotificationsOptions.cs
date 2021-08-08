@@ -1,5 +1,6 @@
 ﻿using PushNotifications.Apple;
 using PushNotifications.Google;
+using FcmLegacyOptions = PushNotifications.Google.Legacy.FcmOptions;
 
 namespace PushNotifications.AspNetCore
 {
@@ -14,5 +15,7 @@ namespace PushNotifications.AspNetCore
         public ApnsJwtOptions ApnsJwtOptions { get; set; }
 
         public FcmOptions FcmOptions { get; set; }
+
+        public FcmLegacyOptions FcmLegacyOptions { get; set; }
     }
 }

@@ -4,7 +4,7 @@
 # (c)2021 superdev GmbH
 ####################################################################
 
-name: 1.0.$(date:yy)$(DayOfYear).$(rev:rr)
+name: 2.0.$(date:yy)$(DayOfYear).$(rev:rr)
 
 pool:
   vmImage: 'windows-2019'
@@ -71,18 +71,25 @@ steps:
     msbuildArgs: ''
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
-
+    
 - task: DownloadSecureFile@1
-  name: caCertificate
+  name: AuthKey_QWWBGJLG7F
   displayName: 'Download AuthKey'
   inputs:
     secureFile: 'AuthKey_QWWBGJLG7F.p8'
+   
+- task: DownloadSecureFile@1
+  name: ServiceAccountKeyFile
+  displayName: 'Download ServiceAccountKeyFile'
+  inputs:
+    secureFile: 'ServiceAccountKeyFile.json'
    
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(Agent.TempDirectory)'
     Contents: |
       AuthKey_QWWBGJLG7F.p8
+      ServiceAccountKeyFile.json
     TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Tests/Testdata'
     OverWrite: true
     flattenFolders: true

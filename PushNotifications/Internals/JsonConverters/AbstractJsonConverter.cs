@@ -2,7 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace PushNotifications
+namespace PushNotifications.Internals
 {
     public abstract class AbstractJsonConverter<T> : JsonConverter
     {

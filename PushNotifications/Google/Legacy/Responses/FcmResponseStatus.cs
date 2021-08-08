@@ -1,7 +1,7 @@
 ﻿using System;
 using Newtonsoft.Json;
 
-namespace PushNotifications.Google
+namespace PushNotifications.Google.Legacy
 {
     /// <summary>
     /// Source: https://firebase.google.com/docs/cloud-messaging/http-server-ref#table9
@@ -89,7 +89,7 @@ namespace PushNotifications.Google
 
         public override int GetHashCode()
         {
-            return (this.value != null ? this.value.ToLowerInvariant().GetHashCode() : 0);
+            return this.value != null ? this.value.ToLowerInvariant().GetHashCode() : 0;
         }
 
         public static bool operator ==(FcmResponseStatus left, FcmResponseStatus right)

@@ -1,6 +1,6 @@
 using Newtonsoft.Json;
 
-namespace PushNotifications.Google
+namespace PushNotifications.Google.Legacy
 {
     public class FcmMessageResult
     {
@@ -16,7 +16,7 @@ namespace PushNotifications.Google
         /// of the original request to which this result maps.
         /// </summary>
         [JsonIgnore]
-        public string RegistrationId { get; set; }
+        public string RegistrationId { get; internal set; }
 
         /// <summary>
         /// Error that occurred when processing the message.

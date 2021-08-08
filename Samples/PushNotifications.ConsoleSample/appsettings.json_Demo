@@ -1,6 +1,10 @@
 {
   "PushNotifications": {
+    "_comment": "Use FcmOptions if you want to use FCM HTTP v1 API; FcmLegacyOptions is used for FCM Legacy HTTP API",
     "FcmOptions": {
+      "ServiceAccountKeyFilePath": ".\\ServiceAccountKeyFile.json"
+    },
+    "FcmLegacyOptions": {
       "SenderId": "000000000000",
       "SenderAuthToken": "AAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDEEEEEEEEEEEEEEEEEEEEEEEEFFFFFFFFFFFGGGGGGG",
       "PackageName": "com.company.SampleApp"
