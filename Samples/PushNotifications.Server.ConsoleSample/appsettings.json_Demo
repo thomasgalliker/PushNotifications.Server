@@ -1,0 +1,20 @@
+{
+  "PushNotifications": {
+    "_comment": "Use FcmOptions if you want to use FCM HTTP v1 API; FcmLegacyOptions is used for FCM Legacy HTTP API",
+    "FcmOptions": {
+      "ServiceAccountKeyFilePath": ".\\Files\\ServiceAccountKeyFile.json"
+    },
+    "FcmLegacyOptions": {
+      "SenderId": "000000000000",
+      "SenderAuthToken": "AAAAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBBBBCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDEEEEEEEEEEEEEEEEEEEEEEEEFFFFFFFFFFFGGGGGGG",
+      "PackageName": "com.company.SampleApp"
+    },
+    "ApnsJwtOptions": {
+      "UseSandbox": true,
+      "BundleId": "com.company.SampleApp",
+      "CertFilePath": ".\\Files\\AuthKey_AAAAAAAAAA.p8",
+      "KeyId": "AAAAAAAAAA",
+      "TeamId": "BBBBBBBBBB"
+    }
+  }
+}

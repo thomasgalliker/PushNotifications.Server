@@ -1,22 +1,22 @@
 # PushNotifications
-[![Version](https://img.shields.io/nuget/v/PushNotifications.NET.svg)](https://www.nuget.org/packages/PushNotifications.NET)  [![Downloads](https://img.shields.io/nuget/dt/PushNotifications.NET.svg)](https://www.nuget.org/packages/PushNotifications.NET)
+[![Version](https://img.shields.io/nuget/v/PushNotifications.Server.svg)](https://www.nuget.org/packages/PushNotifications.Server)  [![Downloads](https://img.shields.io/nuget/dt/PushNotifications.Server.svg)](https://www.nuget.org/packages/PushNotifications.Server)
 
 <img src="https://raw.githubusercontent.com/thomasgalliker/PushNotifications/develop/Images/logo.png" height="100" alt="PushNotifications" align="right">
 Server-side .NET library for sending push notifications to Apple Push Notification Service (APNS) and Google's Firebase Cloud Messaging (FCM).
 
 ### Download and Install PushNotifications
-This library is available on NuGet: https://www.nuget.org/packages/PushNotifications.NET
-Use the following command to install PushNotifications.NET using NuGet package manager console:
+This library is available on NuGet: https://www.nuget.org/packages/PushNotifications.Server
+Use the following command to install PushNotifications.Server using NuGet package manager console:
 
-    PM> Install-Package PushNotifications.NET
+    PM> Install-Package PushNotifications.Server
 
 You can use this library in any .NET project which is compatible to .NET Standard 2.0 and higher.
 
 ### ASP.NET Core Integration
-For a smooth integration with ASP.NET Core projects, use following NuGet package: https://www.nuget.org/packages/PushNotifications.AspNetCore
-Use the following command to install PushNotifications.AspNetCore using NuGet package manager console:
+For a smooth integration with ASP.NET Core projects, use following NuGet package: https://www.nuget.org/packages/PushNotifications.AspNetCore.Server
+Use the following command to install PushNotifications.AspNetCore.Server using NuGet package manager console:
 
-    PM> Install-Package PushNotifications.AspNetCore
+    PM> Install-Package PushNotifications.AspNetCore.Server
 
 You can use this library in any ASP.NET Core project which is compatible to .NET Core 3.1 and higher.
 
@@ -38,7 +38,7 @@ var pushRequest = new PushRequest
     Content = new PushContent
     {
         Title = "Test Message",
-        Body = $"Message from PushNotifications.AspNetCoreSample @ {DateTime.Now}",
+        Body = $"Message from PushNotifications.AspNetCore.ServerSample @ {DateTime.Now}",
         CustomData = new Dictionary<string, string>
         {
             { "key", "value" }
@@ -65,7 +65,7 @@ var fcmRequest = new FcmRequest()
     Notification = new FcmNotification
     {
         Title = "Test Message",
-        Body = $"Message from PushNotifications.AspNetCoreSample @ {DateTime.Now}",
+        Body = $"Message from PushNotifications.AspNetCore.ServerSample @ {DateTime.Now}",
     },
     Data = new Dictionary<string, string>
     {
@@ -81,7 +81,7 @@ tbd
 ```C#
 var apnsRequest = new ApnsRequest(ApplePushType.Alert)
     .AddToken(token)
-    .AddAlert("Test Message", $"Message from PushNotifications.AspNetCoreSample @ {DateTime.Now}")
+    .AddAlert("Test Message", $"Message from PushNotifications.AspNetCore.ServerSample @ {DateTime.Now}")
     .AddCustomProperty("key", "value");
 
 var apnsResponse = await this.apnsClient.SendAsync(apnsRequest);

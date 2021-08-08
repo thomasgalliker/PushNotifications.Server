@@ -1,0 +1,45 @@
+﻿{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:48794",
+      "sslPort": 44373
+    }
+  },
+  "profiles": {
+    "IIS Express (APNS)": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "apns/send",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express (FCM)": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "fcm/send",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express (FCM Legacy)": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "fcmlegacy/send",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "IIS Express (X)": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "x/send",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
