@@ -23,8 +23,11 @@
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="AuthKey_QWWBGJLG7F.p8">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="Files\AuthKey_QWWBGJLG7F.p8">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Files\ServiceAccountKeyFile.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
