@@ -4,7 +4,7 @@
 # (c)2021 superdev GmbH
 ####################################################################
 
-name: 2.0.$(date:yy)$(DayOfYear).$(rev:rr)
+name: 1.0.$(date:yy)$(DayOfYear).$(rev:rr)
 
 pool:
   vmImage: 'windows-2019'
@@ -24,7 +24,7 @@ trigger:
     - Samples/*
 
 variables:
-  solution: 'PushNotifications.sln'
+  solution: 'PushNotifications.Server.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   buildVersionPostfix: '-pre'
@@ -40,9 +40,10 @@ steps:
   displayName: 'Set Assembly Manifest Data'
   inputs:
     FileNames: |
-     PushNotifications.csproj
+     PushNotifications.Server.csproj
+     PushNotifications.Server.AspNetCore.csproj
     InsertAttributes: true
-    Product: 'PushNotifications'
+    Product: 'PushNotifications.Server'
     Description: ''
     Company: 'superdev GmbH'
     Copyright: '(c) $(date:YYYY) superdev GmbH'
@@ -90,7 +91,7 @@ steps:
     Contents: |
       AuthKey_QWWBGJLG7F.p8
       ServiceAccountKeyFile.json
-    TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Tests/Testdata'
+    TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Server.Tests/Testdata'
     OverWrite: true
     flattenFolders: true
 
@@ -102,34 +103,34 @@ steps:
     arguments: '--framework netcoreapp3.1'
     
 - task: DotNetCoreCLI@2
-  displayName: 'Pack PushNotifications -pre'
+  displayName: 'Pack PushNotifications.Server -pre'
   inputs:
     command: pack
-    packagesToPack: PushNotifications/PushNotifications.csproj
+    packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
     versionEnvVar: PackageVersionPre
 
 - task: DotNetCoreCLI@2
-  displayName: 'Pack PushNotifications.AspNetCore -pre'
+  displayName: 'Pack PushNotifications.Server.AspNetCore -pre'
   inputs:
     command: pack
-    packagesToPack: PushNotifications.AspNetCore/PushNotifications.AspNetCore.csproj
+    packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
     versioningScheme: byEnvVar
     versionEnvVar: PackageVersionPre
 
 - task: DotNetCoreCLI@2
-  displayName: 'Pack PushNotifications'
+  displayName: 'Pack PushNotifications.Server'
   inputs:
     command: pack
-    packagesToPack: PushNotifications/PushNotifications.csproj
+    packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
     versionEnvVar: PackageVersion
     
 - task: DotNetCoreCLI@2
-  displayName: 'Pack PushNotifications.AspNetCore'
+  displayName: 'Pack PushNotifications.Server.AspNetCore'
   inputs:
     command: pack
-    packagesToPack: PushNotifications.AspNetCore/PushNotifications.AspNetCore.csproj
+    packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
     versioningScheme: byEnvVar
     versionEnvVar: PackageVersion
 
