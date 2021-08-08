@@ -85,33 +85,22 @@ namespace PushNotifications.Google.Legacy
             this.logger.Log(LogLevel.Debug, $"SendAsync returned json content:{Environment.NewLine}{responseContentJson}");
 
             var tokenDebuggerDisplay = fcmRequest.RegistrationIds?.Count > 0 ? $"RegistrationIds=[{string.Join(", ", fcmRequest.RegistrationIds)}]" : ($"To={fcmRequest.To ?? "null"}");
+           
+            var fcmResponse = JsonConvert.DeserializeObject<FcmResponse>(responseContentJson);
+
+            // Assign registration ID to each result in the list
+            fcmResponse.Results.ForPair(fcmRequest.RegistrationIds ?? new List<string> { fcmRequest.To }, (r, id) => r.RegistrationId = id);
 
             if (response.StatusCode == HttpStatusCode.OK) // TODO Use if (response.IsSuccessStatusCode)
             {
                 this.logger.Log(LogLevel.Info, $"SendAsync to {tokenDebuggerDisplay} successfully completed");
-                var fcmResponse = JsonConvert.DeserializeObject<FcmResponse>(responseContentJson);
-
-                // Assign registration ID to each result in the list
-                fcmResponse.Results.ForPair(fcmRequest.RegistrationIds ?? new List<string> { fcmRequest.To }, (r, id) => r.RegistrationId = id);
-
-                return fcmResponse;
             }
-
-            this.logger.Log(LogLevel.Error, $"SendAsync to {tokenDebuggerDisplay} failed with StatusCode={(int)response.StatusCode} ({response.StatusCode})");
-
-            if ((int)response.StatusCode >= 500 && (int)response.StatusCode < 600)
+            else
             {
-                //First try grabbing the retry-after header and parsing it.
-                var retryAfterHeader = response.Headers.RetryAfter;
-
-                if (retryAfterHeader != null && retryAfterHeader.Delta.HasValue)
-                {
-                    var retryAfter = retryAfterHeader.Delta.Value;
-                    throw new RetryAfterException(fcmRequest, "FCM Requested Backoff", DateTime.UtcNow + retryAfter);
-                }
+                this.logger.Log(LogLevel.Error, $"SendAsync to {tokenDebuggerDisplay} failed with StatusCode={(int)response.StatusCode} ({response.StatusCode})");
             }
 
-            throw new FcmNotificationException(fcmRequest, "FCM HTTP Error: " + response.StatusCode, responseContentJson);
+            return fcmResponse;
         }
     }
 }
