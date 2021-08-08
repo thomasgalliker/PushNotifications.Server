@@ -23,7 +23,6 @@ namespace PushNotifications.Google
 
         private readonly ILogger logger;
         private readonly HttpClient httpClient;
-        private readonly FcmOptions options;
         private readonly ServiceAccountCredential credential;
         private readonly string projectId;
 
@@ -54,7 +53,10 @@ namespace PushNotifications.Google
                 throw new ArgumentNullException(nameof(httpClient));
             }
 
-            this.options = options ?? throw new ArgumentNullException(nameof(options));
+            if (options is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
 
             if (string.IsNullOrEmpty(options.ServiceAccountKeyFilePath))
             {
