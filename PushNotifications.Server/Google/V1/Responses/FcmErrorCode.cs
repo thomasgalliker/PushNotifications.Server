@@ -20,6 +20,7 @@ namespace PushNotifications.Server.Google
         public static readonly FcmErrorCode Unavailable = new FcmErrorCode("UNAVAILABLE");
         public static readonly FcmErrorCode Internal = new FcmErrorCode("INTERNAL");
         public static readonly FcmErrorCode ThirdPartyAuthError = new FcmErrorCode("THIRD_PARTY_AUTH_ERROR");
+        public static readonly FcmErrorCode NotFound = new FcmErrorCode("NOT_FOUND"); // For some reasons, this error code can also happen, but is not documented on fcm/rest/v1/ErrorCode
 
         private readonly string value;
 

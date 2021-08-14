@@ -20,7 +20,9 @@ namespace PushNotifications.Server.Google
 
         public IEnumerable<string> GetTokensWithRegistrationProblem()
         {
-            if (this.Error?.Status == FcmErrorCode.Unregistered)
+            if (this.Error is FcmError fcmError && 
+                (fcmError.Status == FcmErrorCode.Unregistered || 
+                 fcmError.Status == FcmErrorCode.NotFound))
             {
                 yield return this.Token;
             }
