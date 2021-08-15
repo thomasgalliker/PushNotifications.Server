@@ -43,7 +43,31 @@ namespace PushNotifications.Server.Tests.Apple
                             Icon = "icon",
                             Title = "title",
                             TitleLocArgs = new[] { "3", "4" },
-                            TitleLocKey = "title_loc_key"
+                            TitleLocKey = "title_loc_key",
+                            ChannelId = "channelId",
+                            Sticky = true,
+                            EventTime = new DateTime(2000, 1, 1, 23, 59, 59, DateTimeKind.Utc),
+                            LocalOnly = false,
+                            NotificationPriority = NotificationPriority.High,
+                            DefaultSound = false,
+                            DefaultLightSettings = false,
+                            DefaultVibrateTimings = false,
+                            //VibrateTimings = new[] { TimeSpan.FromSeconds(1), TimeSpan.FromMilliseconds(250), TimeSpan.FromSeconds(1.2d) },
+                            Visibility = Visibility.Unspecified,
+                            NotificationCount = 99,
+                            LightSettings = new LightSettings
+                            {
+                                Color = new Color
+                                {
+                                    Red = 255,
+                                    Green = 255,
+                                    Blue = 255,
+                                    Alpha = 0,
+                                },
+                                LightOnDuration = TimeSpan.FromMilliseconds(1),
+                                LightOffDuration = TimeSpan.FromMilliseconds(500),
+                            },
+                            Image = "ic_launcher"
                         },
                         TimeToLive = TimeSpan.FromSeconds(10),
                         RestrictedPackageName = "restricted_package_name"

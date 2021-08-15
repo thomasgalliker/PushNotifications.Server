@@ -27,12 +27,13 @@ namespace PushNotifications.Server.Tests.Apple
         public void ShouldCreateFcmResponse_Error()
         {
             // Act
-            var fcmResponse = FcmResponses.V1.GetFcmResponse_Error();
+            var fcmResponse = FcmResponses.V1.GetFcmResponse_Error_NotFound();
 
             // Assert
             fcmResponse.Should().NotBeNull();
             fcmResponse.IsSuccessful.Should().BeFalse();
             fcmResponse.Error.Should().NotBeNull();
+            fcmResponse.Error.Status.Should().Be(FcmErrorCode.NotFound);
             fcmResponse.Token.Should().Be("token");
         }
 
@@ -66,6 +67,7 @@ namespace PushNotifications.Server.Tests.Apple
 
                 // Positive
                 this.Add(token, FcmErrorCode.Unregistered, new List<string> { token });
+                this.Add(token, FcmErrorCode.NotFound, new List<string> { token });
 
                 // Negative
                 this.Add(token, FcmErrorCode.QuotaExceeded, new List<string> { });

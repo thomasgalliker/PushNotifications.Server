@@ -96,7 +96,7 @@ namespace PushNotifications.Server.Tests.Google.V1
         {
             // Arrange
             this.httpClientMock.SetupSendAsync()
-                .ReturnsAsync(HttpResponseMessages.BadRequest(JsonConvert.SerializeObject(FcmResponses.V1.GetFcmResponse_Error())))
+                .ReturnsAsync(HttpResponseMessages.BadRequest(JsonConvert.SerializeObject(FcmResponses.V1.GetFcmResponse_Error_InvalidArgument())))
                 .Verifiable();
 
             var fcmOptions = FcmTestOptions.V1.GetFcmOptions();

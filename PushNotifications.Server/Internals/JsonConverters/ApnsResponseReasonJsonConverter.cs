@@ -14,7 +14,7 @@ namespace PushNotifications.Server.Internals
                 return new ApnsResponseReason(stringValue);
             }
 
-            return ApnsResponseReason.Unknown;
+            return null;
         }
 
         public override void WriteJson(JsonWriter writer, ApnsResponseReason value, JsonSerializer serializer)

@@ -13,7 +13,7 @@ namespace PushNotifications.Server.Internals.JsonConverters
                 return new AndroidMessagePriority(stringValue);
             }
 
-            return AndroidMessagePriority.Unknown;
+            return null;
         }
 
         public override void WriteJson(JsonWriter writer, AndroidMessagePriority value, JsonSerializer serializer)
