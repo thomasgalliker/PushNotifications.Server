@@ -4,6 +4,8 @@
 # (c)2021 superdev GmbH
 ####################################################################
 
+name: $[format('{0}', variables['releaseVersion'])]
+
 pool:
   vmImage: 'windows-2019'
 
@@ -25,14 +27,12 @@ variables:
   solution: 'PushNotifications.Server.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  Version.MajorMinor: '1.0'
+  Version.MajorMinor: '1.1'
   Version.Patch: $[counter(variables['Version.MajorMinor'], 0)]
   Version.PreRelease: '-pre'
   releaseVersion: $[format('{0}.{1}', variables['Version.MajorMinor'], variables['Version.Patch'])]
   preReleaseVersion: $[format('{0}{1}', variables['releaseVersion'], variables['Version.PreRelease'])]
-  
-name: $[format('{0}', variables['releaseVersion'])]
-
+ 
 steps:
 - task: Bash@3
   displayName: 'Print all variables'
