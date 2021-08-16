@@ -16,6 +16,7 @@ trigger:
     - develop
     - release/*
     - feature/*
+    - bugfix/*
 
   paths:
     exclude:
