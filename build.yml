@@ -1,10 +1,10 @@
 ####################################################################
-# VSTS Build Configuration, Version 1.3
+# VSTS Build Configuration, Version 1.4
 #
 # (c)2021 superdev GmbH
 ####################################################################
 
-name: 1.0.$(date:yy)$(DayOfYear).$(rev:rr)
+name: $(releaseVersion)
 
 pool:
   vmImage: 'windows-2019'
@@ -28,6 +28,11 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   buildVersionPostfix: '-pre'
+  major: '1'
+  minor: '0'
+  revision: $[counter(variables['minor'], 1)]
+  releaseVersion: '$(major).$(minor).$(revision)'
+  preReleaseVersion: '$(releaseVersion)-pre'
 
 steps:
 - task: Bash@3
@@ -67,11 +72,6 @@ steps:
   displayName: 'NuGet restore'
   inputs:
     restoreSolution: '$(solution)'
-
-- powershell: |
-   Write-Host "##vso[task.setvariable variable=PackageVersion]$(Build.BuildNumber)"
-   Write-Host "##vso[task.setvariable variable=PackageVersionPre]$(Build.BuildNumber)$(BuildVersionPostfix)"
-  displayName: 'Set PackageVersion'
 
 - task: VSBuild@1
   displayName: 'Build solution'
@@ -116,7 +116,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: PackageVersionPre
+    versionEnvVar: preReleaseVersion
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server.AspNetCore -pre'
@@ -124,7 +124,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: PackageVersionPre
+    versionEnvVar: preReleaseVersion
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server'
@@ -132,7 +132,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: PackageVersion
+    versionEnvVar: releaseVersion
     
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server.AspNetCore'
@@ -140,7 +140,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: PackageVersion
+    versionEnvVar: releaseVersion
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
