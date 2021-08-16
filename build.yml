@@ -4,8 +4,6 @@
 # (c)2021 superdev GmbH
 ####################################################################
 
-name: $(releaseVersion)
-
 pool:
   vmImage: 'windows-2019'
 
@@ -33,6 +31,8 @@ variables:
   revision: $[counter(variables['minor'], 1)]
   releaseVersion: '$(major).$(minor).$(revision)'
   preReleaseVersion: '$(releaseVersion)-pre'
+  
+name: $(releaseVersion)
 
 steps:
 - task: Bash@3
