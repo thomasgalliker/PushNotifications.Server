@@ -25,14 +25,13 @@ variables:
   solution: 'PushNotifications.Server.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  buildVersionPostfix: '-pre'
-  major: '1'
-  minor: '0'
-  revision: $[counter(variables['minor'], 1)]
-  releaseVersion: '$(major).$(minor).$(revision)'
-  preReleaseVersion: '$(releaseVersion)-pre'
+  Version.MajorMinor: '1.0'
+  Version.Patch: $[counter(variables['Version.MajorMinor'], 0)]
+  Version.PreRelease: '-pre'
+  releaseVersion: $[format('{0}.{1}', variables['Version.MajorMinor'], variables['Version.Patch'])]
+  preReleaseVersion: $[format('{0}{1}', variables['releaseVersion'], variables['Version.PreRelease'])]
   
-name: $(releaseVersion)
+name: $[format('{0}', variables['releaseVersion'])]
 
 steps:
 - task: Bash@3
