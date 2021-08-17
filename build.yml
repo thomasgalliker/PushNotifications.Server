@@ -30,9 +30,11 @@ variables:
   buildConfiguration: 'Release'
   Version.MajorMinor: '1.1'
   Version.Patch: $[counter(variables['Version.MajorMinor'], 0)]
-  Version.PreReleaseSuffix: '-pre'
-  Version.ReleaseVersion: $[format('{0}.{1}', variables['Version.MajorMinor'], variables['Version.Patch'])]
-  Version.PreReleaseVersion: $[format('{0}{1}', variables['Version.ReleaseVersion'], variables['Version.PreReleaseSuffix'])]
+  ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
+    Version.PreReleaseSuffix: '-pre'
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
+    Version.PreReleaseSuffix: ''
+  Version.ReleaseVersion: $[format('{0}.{1}{2}', variables['Version.MajorMinor'], variables['Version.Patch'], variables['Version.PreReleaseSuffix'])]
  
 steps:
 - task: Bash@3
@@ -109,22 +111,6 @@ steps:
     command: test
     projects: '**/*.Tests.csproj'
     arguments: '--framework netcoreapp3.1'
-    
-- task: DotNetCoreCLI@2
-  displayName: 'Pack PushNotifications.Server -pre'
-  inputs:
-    command: pack
-    packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
-    versioningScheme: byEnvVar
-    versionEnvVar: Version.PreReleaseVersion
-
-- task: DotNetCoreCLI@2
-  displayName: 'Pack PushNotifications.Server.AspNetCore -pre'
-  inputs:
-    command: pack
-    packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
-    versioningScheme: byEnvVar
-    versionEnvVar: Version.PreReleaseVersion
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server'
