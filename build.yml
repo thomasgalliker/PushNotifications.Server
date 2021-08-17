@@ -4,7 +4,7 @@
 # (c)2021 superdev GmbH
 ####################################################################
 
-name: $[format('{0}', variables['releaseVersion'])]
+name: $[format('{0}', variables['Version.ReleaseVersion'])]
 
 pool:
   vmImage: 'windows-2019'
@@ -30,9 +30,9 @@ variables:
   buildConfiguration: 'Release'
   Version.MajorMinor: '1.1'
   Version.Patch: $[counter(variables['Version.MajorMinor'], 0)]
-  Version.PreRelease: '-pre'
-  releaseVersion: $[format('{0}.{1}', variables['Version.MajorMinor'], variables['Version.Patch'])]
-  preReleaseVersion: $[format('{0}{1}', variables['releaseVersion'], variables['Version.PreRelease'])]
+  Version.PreReleaseSuffix: '-pre'
+  Version.ReleaseVersion: $[format('{0}.{1}', variables['Version.MajorMinor'], variables['Version.Patch'])]
+  Version.PreReleaseVersion: $[format('{0}{1}', variables['Version.ReleaseVersion'], variables['Version.PreReleaseSuffix'])]
  
 steps:
 - task: Bash@3
@@ -116,7 +116,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: preReleaseVersion
+    versionEnvVar: Version.PreReleaseVersion
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server.AspNetCore -pre'
@@ -124,7 +124,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: preReleaseVersion
+    versionEnvVar: Version.PreReleaseVersion
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server'
@@ -132,7 +132,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: releaseVersion
+    versionEnvVar: Version.ReleaseVersion
     
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server.AspNetCore'
@@ -140,7 +140,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: releaseVersion
+    versionEnvVar: Version.ReleaseVersion
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
