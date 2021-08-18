@@ -4,7 +4,7 @@
 # (c)2021 superdev GmbH
 ####################################################################
 
-name: $[format('{0} - {1}', variables['BuildID'], variables['buildName'])]
+name: $[format('{0}', variables['buildName'])]
 
 pool:
   vmImage: 'windows-2019'
@@ -145,7 +145,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: Version.ReleaseVersion
+    versionEnvVar: semVersion
     
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server.AspNetCore'
@@ -153,7 +153,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: Version.ReleaseVersion
+    versionEnvVar: semVersion
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
