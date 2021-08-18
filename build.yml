@@ -25,6 +25,9 @@ trigger:
     - Samples/*
 
 variables:
+  solution: 'PushNotifications.Server.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
   majorVersion: 1
   minorVersion: 1
   patchVersion: 12
@@ -37,7 +40,7 @@ variables:
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/release/') }}:
     # Versioning: 1.0.0-alpha.branch.123
     releaseOnNuget: true
-    semVersionBase: $[format('{0}-alpha.{1}', variables.version, variables['Build.SourceBranchName'])]
+    semVersionBase: $[format('{0}-alpha', variables.version)]
     semVersionRev: $[counter(variables.semVersionBase, 0)]
     semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
     buildName: $[format('Release - {0}', variables.semVersion)]
@@ -51,7 +54,7 @@ variables:
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/') }}:
     # Versioning: 1.0.0-feature.branch.123
     releaseOnNuget: false
-    semVersionBase: $[format('{0}-feature.{1}', variables.version, variables['Build.SourceBranchName'])]
+    semVersionBase: $[format('{0}-feature', variables.version)]
     semVersionRev: $[counter(variables.semVersionBase, 0)]
     semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
     buildName: $[format('Feature - {0}', variables.semVersion)]
