@@ -34,37 +34,24 @@ variables:
   version: $[format('{0}.{1}.{2}', variables.majorVersion, variables.minorVersion, variables.patchVersion)]
   ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     # Versioning: 1.0.0
-    releaseOnNuget: true
     semVersion: $[format('{0}', variables.version)]
-    buildName: $[format('{0}', variables.semVersion)]
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/release/') }}:
-    # Versioning: 1.0.0-alpha.branch.123
-    releaseOnNuget: true
-    semVersionBase: $[format('{0}-alpha', variables.version)]
-    semVersionRev: $[counter(variables.semVersionBase, 0)]
-    semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
-    buildName: $[format('Release - {0}', variables.semVersion)]
   ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/develop') }}:
-    # Versioning: 1.0.0-develop.123
-    releaseOnNuget: false
-    semVersionBase: $[format('{0}-develop', variables.version)]
+    # Versioning: 1.0.0-pre.123
+    semVersionBase: $[format('{0}-pre', variables.version)]
     semVersionRev: $[counter(variables.semVersionBase, 0)]
     semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
-    buildName: $[format('Develop - {0}', variables.semVersion)]
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/') }}:
-    # Versioning: 1.0.0-feature.branch.123
-    releaseOnNuget: false
+    # Versioning: 1.0.0-feature.123
     semVersionBase: $[format('{0}-feature', variables.version)]
     semVersionRev: $[counter(variables.semVersionBase, 0)]
     semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
-    buildName: $[format('Feature - {0}', variables.semVersion)]
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}: # Pull requests
     # Versioning: 1.0.0-pr.1.123
-    releaseOnNuget: false
     semVersionBase: $[format('{0}-pr.{1}', variables.version, variables['System.PullRequest.PullRequestId'])]
     semVersionRev: $[counter(variables.semVersionBase, 0)]
     semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
-    buildName: $[format('Pull Request - {0}', variables.semVersion)]
+    
+  buildName: $[format('{0}', variables.semVersion)]
 
 steps:
 - task: Bash@3
