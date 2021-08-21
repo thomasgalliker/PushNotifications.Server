@@ -30,7 +30,7 @@ variables:
   buildConfiguration: 'Release'
   majorVersion: 1
   minorVersion: 1
-  patchVersion: 12
+  patchVersion: 13
   version: $[format('{0}.{1}.{2}', variables.majorVersion, variables.minorVersion, variables.patchVersion)]
   ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     # Versioning: 1.0.0
@@ -40,17 +40,11 @@ variables:
     semVersionBase: $[format('{0}-pre', variables.version)]
     semVersionRev: $[counter(variables.semVersionBase, 0)]
     semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
-  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/heads/feature/') }}:
-    # Versioning: 1.0.0-feature.123
-    semVersionBase: $[format('{0}-feature', variables.version)]
-    semVersionRev: $[counter(variables.semVersionBase, 0)]
-    semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}: # Pull requests
     # Versioning: 1.0.0-pr.1.123
     semVersionBase: $[format('{0}-pr.{1}', variables.version, variables['System.PullRequest.PullRequestId'])]
     semVersionRev: $[counter(variables.semVersionBase, 0)]
     semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
-    
   buildName: $[format('{0}', variables.semVersion)]
 
 steps:
@@ -127,7 +121,7 @@ steps:
   inputs:
     command: test
     projects: '**/*.Tests.csproj'
-    arguments: '--framework netcoreapp3.1'
+    arguments: '--no-restore --no-build --configuration $(buildConfiguration) --framework netcoreapp3.1'
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server'
