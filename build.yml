@@ -107,7 +107,7 @@ steps:
     Contents: |
       AuthKey_QWWBGJLG7F.p8
       ServiceAccountKeyFile.json
-    TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Server.Tests/Testdata'
+    TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Server.Tests/bin/Release/net5.0/Testdata'
     OverWrite: true
     flattenFolders: true
 
