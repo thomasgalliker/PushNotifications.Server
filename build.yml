@@ -116,7 +116,7 @@ steps:
   inputs:
     command: test
     projects: '**/*.Tests.csproj'
-    arguments: '--no-restore --no-build --configuration $(buildConfiguration) --framework netcoreapp3.1'
+    arguments: '--no-restore --no-build --configuration $(buildConfiguration)'
 
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server'
