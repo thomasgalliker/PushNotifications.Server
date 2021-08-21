@@ -32,14 +32,13 @@ variables:
   minorVersion: 1
   patchVersion: 13
   version: $[format('{0}.{1}.{2}', variables.majorVersion, variables.minorVersion, variables.patchVersion)]
+  # Versioning: 1.0.0-pre.123
+  semVersionBase: $[format('{0}-pre', variables.version)]
+  semVersionRev: $[counter(variables.semVersionBase, 0)]
+  semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
   ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     # Versioning: 1.0.0
     semVersion: $[format('{0}', variables.version)]
-  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/develop') }}:
-    # Versioning: 1.0.0-pre.123
-    semVersionBase: $[format('{0}-pre', variables.version)]
-    semVersionRev: $[counter(variables.semVersionBase, 0)]
-    semVersion: $[format('{0}.{1}', variables.semVersionBase, variables.semVersionRev)]
   ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}: # Pull requests
     # Versioning: 1.0.0-pr.1.123
     semVersionBase: $[format('{0}-pr.{1}', variables.version, variables['System.PullRequest.PullRequestId'])]
