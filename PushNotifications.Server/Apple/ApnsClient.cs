@@ -230,10 +230,10 @@ namespace PushNotifications.Server.Apple
 
         public static ApnsClient CreateUsingCert(X509Certificate2 cert)
         {
-#if NETSTANDARD2_0
-            throw new NotSupportedException("Certificate-based connection is not supported on all .NET Framework versions and on .NET Core 2.x or lower.");
-#elif NETSTANDARD2_1
-            if (cert == null) throw new ArgumentNullException(nameof(cert));
+            if (cert == null)
+            {
+                throw new ArgumentNullException(nameof(cert));
+            }
 
             var handler = new HttpClientHandler();
             handler.ClientCertificateOptions = ClientCertificateOption.Manual;
@@ -241,9 +241,6 @@ namespace PushNotifications.Server.Apple
             handler.ClientCertificates.Add(cert);
             var httpClient = new HttpClient(handler);
             return new ApnsClient(Logger.Current, httpClient, cert);
-#endif
-
-
         }
 
         public static ApnsClient CreateUsingCert(string pathToCert, string certPassword = null)
