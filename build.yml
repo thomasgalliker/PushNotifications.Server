@@ -4,7 +4,7 @@
 # (c)2021 superdev GmbH
 ####################################################################
 
-name: $[format('{0}', variables['Version.ReleaseVersion'])]
+name: $[format('{0}', variables['buildName'])]
 
 pool:
   vmImage: 'windows-2019'
@@ -14,7 +14,6 @@ trigger:
     include:
     - master
     - develop
-    - release/*
     - feature/*
     - bugfix/*
 
@@ -28,14 +27,20 @@ variables:
   solution: 'PushNotifications.Server.sln'
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
-  Version.MajorMinor: '1.1'
-  Version.Patch: $[counter(variables['Version.MajorMinor'], 0)]
-  ${{ if ne(variables['Build.SourceBranchName'], 'master') }}:
-    Version.PreReleaseSuffix: '-pre'
-  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}:
-    Version.PreReleaseSuffix: ''
-  Version.ReleaseVersion: $[format('{0}.{1}{2}', variables['Version.MajorMinor'], variables['Version.Patch'], variables['Version.PreReleaseSuffix'])]
- 
+  majorVersion: 1
+  minorVersion: 2
+  patchVersion: $[counter(format('{0}.{1}', variables.majorVersion, variables.minorVersion), 0)]
+  ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
+    # Versioning: 1.0.0
+    semVersion: $[format('{0}.{1}.{2}', variables.majorVersion, variables.minorVersion, variables.patchVersion)]
+  ${{ if and(ne(variables['Build.SourceBranch'], 'refs/heads/master'), not(startsWith(variables['Build.SourceBranch'], 'refs/pull/'))) }}:
+    # Versioning: 1.0.0-pre
+    semVersion: $[format('{0}.{1}.{2}-pre', variables.majorVersion, variables.minorVersion, variables.patchVersion)]
+  ${{ if startsWith(variables['Build.SourceBranch'], 'refs/pull/') }}:
+    # Versioning: 1.0.0-pr.000000001
+    semVersion: $[format('{0}.{1}.{2}-pr.{3}', variables.majorVersion, variables.minorVersion, variables.patchVersion, variables['System.PullRequest.PullRequestId'])]
+  buildName: $[format('{0}', variables.semVersion)]
+
 steps:
 - task: Bash@3
   displayName: 'Print all variables'
@@ -82,7 +87,7 @@ steps:
     msbuildArgs: ''
     platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
-    
+
 - task: DownloadSecureFile@1
   name: AuthKey_QWWBGJLG7F
   displayName: 'Download AuthKey'
@@ -101,7 +106,7 @@ steps:
     Contents: |
       AuthKey_QWWBGJLG7F.p8
       ServiceAccountKeyFile.json
-    TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Server.Tests/Testdata'
+    TargetFolder: '$(System.DefaultWorkingDirectory)/Tests/PushNotifications.Server.Tests/bin/Release/net5.0/Testdata'
     OverWrite: true
     flattenFolders: true
 
@@ -110,15 +115,15 @@ steps:
   inputs:
     command: test
     projects: '**/*.Tests.csproj'
-    arguments: '--framework netcoreapp3.1'
-
+    arguments: '--no-restore --no-build --configuration $(buildConfiguration)'
+    
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server'
   inputs:
     command: pack
     packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: Version.ReleaseVersion
+    versionEnvVar: semVersion
     
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server.AspNetCore'
@@ -126,7 +131,7 @@ steps:
     command: pack
     packagesToPack: PushNotifications.Server.AspNetCore/PushNotifications.Server.AspNetCore.csproj
     versioningScheme: byEnvVar
-    versionEnvVar: Version.ReleaseVersion
+    versionEnvVar: semVersion
 
 - task: CopyFiles@2
   displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
