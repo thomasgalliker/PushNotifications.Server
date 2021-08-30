@@ -122,7 +122,7 @@ steps:
   inputs:
     reports: '$(Build.SourcesDirectory)/Tests/**/*.coverage.cobertura.xml'
     targetdir: '$(Build.SourcesDirectory)/CodeCoverage'
-    reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
+    reporttypes: 'Cobertura'
     assemblyfilters: '-xunit*'
     
 - task: DotNetCoreCLI@2
