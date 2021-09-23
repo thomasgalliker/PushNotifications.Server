@@ -101,8 +101,6 @@ namespace PushNotifications.Server.Apple
                 .Replace("-----BEGIN PRIVATE KEY-----", "")
                 .Replace("-----END PRIVATE KEY-----", "");
 
-
-
 #if NETSTANDARD2_0
             var key = CngKey.Import(Convert.FromBase64String(certContent), CngKeyBlobFormat.Pkcs8PrivateBlob);
 #else
