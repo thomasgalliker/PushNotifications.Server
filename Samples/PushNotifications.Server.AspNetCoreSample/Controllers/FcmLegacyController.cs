@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using PushNotifications.Server.Server.AspNetCoreSample.Demodata;
 using PushNotifications.Server.Google.Legacy;
+using PushNotifications.Server.AspNetCoreSample.Demodata;
 
 namespace PushNotifications.Server.Server.AspNetCoreSample.Controllers
 {

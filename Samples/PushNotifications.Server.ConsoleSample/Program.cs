@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using PushNotifications.Server.ConsoleSample.Logging;
 using PushNotifications.Server.Logging;
@@ -10,7 +11,7 @@ namespace PushNotifications.Server.ConsoleSample
     {
         private static IConfigurationRoot configuration;
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
@@ -26,17 +27,19 @@ namespace PushNotifications.Server.ConsoleSample
                 .Build();
 
             // Sending push notifications to iOS devices
-            SendApnsPushNotification().Wait();
+            await SendApnsPushNotification();
 
             // Sending push notifications to Android devices (FCM V1 HTTP API)
-            SendFcmPushNotification().Wait();
+            await SendFcmPushNotification();
 
             // Sending push notifications to Android devices (FCM Legacy HTTP API)
-            SendFcmLegacyPushNotification().Wait();
+            await SendFcmLegacyPushNotification();
 
             // Sending push notifications to all platforms
-            SendXPushNotification().Wait();
+            await SendXPushNotification();
 
+            Console.WriteLine();
+            Console.WriteLine("Press any key to close this window...");
             Console.ReadKey();
         }
 
