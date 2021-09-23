@@ -308,12 +308,12 @@ namespace PushNotifications.Server.Apple
 
                 var now = DateTimeOffset.UtcNow;
 
-                string header = JsonConvert.SerializeObject(new { alg = "ES256", kid = this.keyId });
-                string payload = JsonConvert.SerializeObject(new { iss = this.teamId, iat = now.ToUnixTimeSeconds() });
+                var header = JsonConvert.SerializeObject(new { alg = "ES256", kid = this.keyId });
+                var payload = JsonConvert.SerializeObject(new { iss = this.teamId, iat = now.ToUnixTimeSeconds() });
 
-                string headerBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(header));
-                string payloadBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(payload));
-                string unsignedJwtData = $"{headerBase64}.{payloadBase64}";
+                var headerBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(header));
+                var payloadBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(payload));
+                var unsignedJwtData = $"{headerBase64}.{payloadBase64}";
 
                 byte[] signature;
 
