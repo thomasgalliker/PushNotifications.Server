@@ -20,7 +20,7 @@ namespace PushNotifications.Server.Apple
     {
         internal const string DevelopmentEndpoint = "https://api.development.push.apple.com";   // --> Sandbox
         internal const string ProductionEndpoint = "https://api.push.apple.com";                // --> Production
-        private const string bundleIdVoipSuffix = ".voip";
+        private const string BundleIdVoipSuffix = ".voip";
 
         private readonly ILogger logger;
         private readonly HttpClient httpClient;
@@ -153,8 +153,8 @@ namespace PushNotifications.Server.Apple
             }
 
             var topic = split[1];
-            this.isVoipCert = topic.EndsWith(bundleIdVoipSuffix);
-            this.bundleId = split[1].Replace(bundleIdVoipSuffix, "");
+            this.isVoipCert = topic.EndsWith(BundleIdVoipSuffix);
+            this.bundleId = split[1].Replace(BundleIdVoipSuffix, "");
             this.useCert = true;
         }
 
@@ -288,7 +288,7 @@ namespace PushNotifications.Server.Apple
                 case ApplePushType.Alert:
                     return this.bundleId;
                 case ApplePushType.Voip:
-                    return this.bundleId + bundleIdVoipSuffix;
+                    return this.bundleId + BundleIdVoipSuffix;
                 case ApplePushType.Unknown:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pushType), pushType, null);
