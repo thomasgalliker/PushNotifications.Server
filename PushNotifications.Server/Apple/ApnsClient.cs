@@ -24,7 +24,11 @@ namespace PushNotifications.Server.Apple
 
         private readonly ILogger logger;
         private readonly HttpClient httpClient;
+#if NETSTANDARD2_0
         private readonly CngKey key;
+#else
+        private readonly ECDsa key;
+#endif
         private readonly string keyId;
         private readonly string teamId;
         private readonly string bundleId;
@@ -97,7 +101,14 @@ namespace PushNotifications.Server.Apple
                 .Replace("-----BEGIN PRIVATE KEY-----", "")
                 .Replace("-----END PRIVATE KEY-----", "");
 
+
+
+#if NETSTANDARD2_0
             var key = CngKey.Import(Convert.FromBase64String(certContent), CngKeyBlobFormat.Pkcs8PrivateBlob);
+#else
+            var key = ECDsa.Create();
+            key.ImportPkcs8PrivateKey(Convert.FromBase64String(certContent), out _);
+#endif
 
             this.key = key ?? throw new ArgumentNullException(nameof(key));
 
@@ -305,11 +316,17 @@ namespace PushNotifications.Server.Apple
                 string unsignedJwtData = $"{headerBase64}.{payloadBase64}";
 
                 byte[] signature;
+
+#if NETSTANDARD2_0
                 using (var dsa = new ECDsaCng(this.key))
                 {
                     dsa.HashAlgorithm = CngAlgorithm.Sha256;
                     signature = dsa.SignData(Encoding.UTF8.GetBytes(unsignedJwtData));
                 }
+#else
+                var hashAlgorithm = HashAlgorithmName.SHA256;
+                signature = this.key.SignData(Encoding.UTF8.GetBytes(unsignedJwtData), hashAlgorithm);
+#endif
 
                 this.jwt = $"{unsignedJwtData}.{Convert.ToBase64String(signature)}";
                 this.lastJwtGenerationTime = now.UtcDateTime;
