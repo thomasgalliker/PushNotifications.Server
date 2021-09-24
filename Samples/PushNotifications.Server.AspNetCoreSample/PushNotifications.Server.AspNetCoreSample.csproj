@@ -20,10 +20,7 @@
     <None Update="App_Data\AuthKey_QWWBGJLG7F.p8">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="App_Data\ServiceAccountKeyFile.json">
+    <None Include="App_Data\ServiceAccountKeyFile.json" Condition="Exists('App_Data\ServiceAccountKeyFile.json')">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
