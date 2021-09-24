@@ -17,12 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="App_Data\AuthKey_QWWBGJLG7F.p8">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="Keys\AuthKey_QWWBGJLG7F.p8">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
-    <None Include="App_Data\ServiceAccountKeyFile.json" Condition="Exists('App_Data\ServiceAccountKeyFile.json')">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Content Update="Keys\ServiceAccountKeyFile.json">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>
