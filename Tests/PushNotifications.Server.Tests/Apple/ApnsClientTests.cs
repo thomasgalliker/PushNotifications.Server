@@ -53,7 +53,9 @@ namespace PushNotifications.Server.Tests.Apple
 
             httpClientMock.VerifySendAsync(
                 request => request.Method == HttpMethod.Post &&
-                           request.RequestUri == new Uri("https://api.development.push.apple.com/3/device/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"),
+                           request.RequestUri == new Uri("https://api.development.push.apple.com/3/device/XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX") &&
+                           request.Headers.Authorization.Scheme == "bearer" &&
+                           request.Headers.Authorization.Parameter != null,
                            Times.Exactly(1));
 
             httpClientMock.VerifyNoOtherCalls();

@@ -28,7 +28,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   majorVersion: 1
-  minorVersion: 2
+  minorVersion: 3
   patchVersion: $[counter(format('{0}.{1}', variables.majorVersion, variables.minorVersion), 0)]
   ${{ if eq(variables['Build.SourceBranch'], 'refs/heads/master') }}:
     # Versioning: 1.0.0
@@ -85,8 +85,8 @@ steps:
   inputs:
     solution: '$(solution)'
     msbuildArgs: ''
-    platform: '$(BuildPlatform)'
-    configuration: '$(BuildConfiguration)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
 
 - task: DownloadSecureFile@1
   name: AuthKey_QWWBGJLG7F
@@ -147,7 +147,7 @@ steps:
     SourceFolder: '$(system.defaultworkingdirectory)'
 
     Contents: |
-     **\bin\$(BuildConfiguration)\**
+     **\bin\$(buildConfiguration)\**
      **\bin\*.nupkg
 
     TargetFolder: '$(Build.ArtifactStagingDirectory)'

@@ -1,4 +1,5 @@
-﻿using PushNotifications.Server.Apple;
+﻿using System.IO;
+using PushNotifications.Server.Apple;
 
 namespace PushNotifications.Server.Tests.Testdata
 {
@@ -9,7 +10,7 @@ namespace PushNotifications.Server.Tests.Testdata
             return new ApnsJwtOptions
             {
                 BundleId = "BundleId",
-                CertFilePath = ".\\Testdata\\AuthKey_QWWBGJLG7F.p8",
+                CertFilePath = Path.Combine(".", "Testdata", "AuthKey_QWWBGJLG7F.p8"), // https://github.com/search?q=private+extension%3Ap8&type=code
                 KeyId = "KeyId",
                 TeamId = "TeamId",
                 UseSandbox = true,
