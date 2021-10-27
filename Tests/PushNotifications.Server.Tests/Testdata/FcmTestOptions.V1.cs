@@ -1,4 +1,5 @@
-﻿using PushNotifications.Server.Google;
+﻿using System.IO;
+using PushNotifications.Server.Google;
 
 namespace PushNotifications.Server.Tests.Testdata
 {
@@ -10,7 +11,7 @@ namespace PushNotifications.Server.Tests.Testdata
             {
                 return new FcmOptions
                 {
-                    ServiceAccountKeyFilePath = ".\\Testdata\\ServiceAccountKeyFile.json",
+                    ServiceAccountKeyFilePath = Path.Combine(".", "Testdata", "ServiceAccountKeyFile.json"),
                 };
             }
         }

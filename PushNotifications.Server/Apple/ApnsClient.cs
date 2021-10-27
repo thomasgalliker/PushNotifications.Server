@@ -20,11 +20,15 @@ namespace PushNotifications.Server.Apple
     {
         internal const string DevelopmentEndpoint = "https://api.development.push.apple.com";   // --> Sandbox
         internal const string ProductionEndpoint = "https://api.push.apple.com";                // --> Production
-        private const string bundleIdVoipSuffix = ".voip";
+        private const string BundleIdVoipSuffix = ".voip";
 
         private readonly ILogger logger;
         private readonly HttpClient httpClient;
+#if NETSTANDARD2_0
         private readonly CngKey key;
+#else
+        private readonly ECDsa key;
+#endif
         private readonly string keyId;
         private readonly string teamId;
         private readonly string bundleId;
@@ -97,7 +101,12 @@ namespace PushNotifications.Server.Apple
                 .Replace("-----BEGIN PRIVATE KEY-----", "")
                 .Replace("-----END PRIVATE KEY-----", "");
 
+#if NETSTANDARD2_0
             var key = CngKey.Import(Convert.FromBase64String(certContent), CngKeyBlobFormat.Pkcs8PrivateBlob);
+#else
+            var key = ECDsa.Create();
+            key.ImportPkcs8PrivateKey(Convert.FromBase64String(certContent), out _);
+#endif
 
             this.key = key ?? throw new ArgumentNullException(nameof(key));
 
@@ -144,8 +153,8 @@ namespace PushNotifications.Server.Apple
             }
 
             var topic = split[1];
-            this.isVoipCert = topic.EndsWith(bundleIdVoipSuffix);
-            this.bundleId = split[1].Replace(bundleIdVoipSuffix, "");
+            this.isVoipCert = topic.EndsWith(BundleIdVoipSuffix);
+            this.bundleId = split[1].Replace(BundleIdVoipSuffix, "");
             this.useCert = true;
         }
 
@@ -279,7 +288,7 @@ namespace PushNotifications.Server.Apple
                 case ApplePushType.Alert:
                     return this.bundleId;
                 case ApplePushType.Voip:
-                    return this.bundleId + bundleIdVoipSuffix;
+                    return this.bundleId + BundleIdVoipSuffix;
                 case ApplePushType.Unknown:
                 default:
                     throw new ArgumentOutOfRangeException(nameof(pushType), pushType, null);
@@ -297,19 +306,25 @@ namespace PushNotifications.Server.Apple
 
                 var now = DateTimeOffset.UtcNow;
 
-                string header = JsonConvert.SerializeObject(new { alg = "ES256", kid = this.keyId });
-                string payload = JsonConvert.SerializeObject(new { iss = this.teamId, iat = now.ToUnixTimeSeconds() });
+                var header = JsonConvert.SerializeObject(new { alg = "ES256", kid = this.keyId });
+                var payload = JsonConvert.SerializeObject(new { iss = this.teamId, iat = now.ToUnixTimeSeconds() });
 
-                string headerBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(header));
-                string payloadBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(payload));
-                string unsignedJwtData = $"{headerBase64}.{payloadBase64}";
+                var headerBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(header));
+                var payloadBase64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(payload));
+                var unsignedJwtData = $"{headerBase64}.{payloadBase64}";
 
                 byte[] signature;
+
+#if NETSTANDARD2_0
                 using (var dsa = new ECDsaCng(this.key))
                 {
                     dsa.HashAlgorithm = CngAlgorithm.Sha256;
                     signature = dsa.SignData(Encoding.UTF8.GetBytes(unsignedJwtData));
                 }
+#else
+                var hashAlgorithm = HashAlgorithmName.SHA256;
+                signature = this.key.SignData(Encoding.UTF8.GetBytes(unsignedJwtData), hashAlgorithm);
+#endif
 
                 this.jwt = $"{unsignedJwtData}.{Convert.ToBase64String(signature)}";
                 this.lastJwtGenerationTime = now.UtcDateTime;
