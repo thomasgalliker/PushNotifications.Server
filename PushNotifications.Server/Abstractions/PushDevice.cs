@@ -16,7 +16,9 @@ namespace PushNotifications.Server
             return new PushDevice(RuntimePlatform.Android, registrationId);
         }
 
+#pragma warning disable IDE1006 // Naming Styles
         public static PushDevice iOS(string token)
+#pragma warning restore IDE1006 // Naming Styles
         {
             return new PushDevice(RuntimePlatform.iOS, token);
         }
