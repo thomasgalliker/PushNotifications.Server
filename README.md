@@ -1,7 +1,6 @@
 # PushNotifications.Server
 [![Version](https://img.shields.io/nuget/v/PushNotifications.Server.svg)](https://www.nuget.org/packages/PushNotifications.Server)  [![Downloads](https://img.shields.io/nuget/dt/PushNotifications.Server.svg)](https://www.nuget.org/packages/PushNotifications.Server)
 
-<img src="https://raw.githubusercontent.com/thomasgalliker/PushNotifications/develop/Images/logo.png" height="100" alt="PushNotifications" align="right">
 Server-side .NET library for sending push notifications to Apple Push Notification Service (APNS) and Google's Firebase Cloud Messaging (FCM).
 
 ### Download and Install PushNotifications
