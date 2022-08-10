@@ -34,7 +34,7 @@
 - Support for FCM HTTP v1 API
 - Cross-platform push service
 		</PackageReleaseNotes>
-		<Copyright>Copyright 2021</Copyright>
+		<Copyright>Copyright 2022</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
@@ -46,9 +46,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Google.Apis.Auth" Version="1.54.0" />
+		<PackageReference Include="Google.Apis.Auth" Version="[1.57.0,)" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
-		<PackageReference Include="Newtonsoft.Json" Version="[12.0.3,)" />
+		<PackageReference Include="Newtonsoft.Json" Version="[13.0.1,)" />
 		<PackageReference Include="System.Security.Cryptography.Cng" Version="5.0.0" />
 	</ItemGroup>
 

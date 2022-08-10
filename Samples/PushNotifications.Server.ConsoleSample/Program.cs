@@ -16,7 +16,7 @@ namespace PushNotifications.Server.ConsoleSample
             AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
 
             Console.WriteLine($"PushNotifications.ConsoleSample [Version 1.0.0.0]");
-            Console.WriteLine($"(c) 2021 superdev gmbh. All rights reserved.");
+            Console.WriteLine($"(c) 2022 superdev gmbh. All rights reserved.");
             Console.WriteLine();
 
             Logger.SetLogger(new ConsoleLogger());
