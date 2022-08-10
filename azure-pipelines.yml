@@ -7,7 +7,7 @@
 name: $[format('{0}', variables['buildName'])]
 
 pool:
-  vmImage: 'windows-2019'
+  vmImage: 'windows-2022'
 
 trigger:
   branches:
@@ -19,9 +19,7 @@ trigger:
 
   paths:
     exclude:
-    - README.md
-    - Images/*
-    - Samples/*
+    - Docs/*
 
 variables:
   solution: 'PushNotifications.Server.sln'
@@ -69,31 +67,23 @@ steps:
     FailOnWarning: false
     DisableTelemetry: false'
 
-
 - task: NuGetToolInstaller@0
-  displayName: 'Use NuGet 5.x'
+  displayName: 'Use NuGet 6.x'
   inputs:
-    versionSpec: 5.x
+    versionSpec: 6.x
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   displayName: 'NuGet restore'
   inputs:
-    restoreSolution: '$(solution)'
+    command: restore
+    projects: '$(solution)'
 
-- task: VSBuild@1
+- task: DotNetCoreCLI@2
   displayName: 'Build solution'
   inputs:
-    solution: '$(solution)'
-    msbuildArgs: ''
-    platform: '$(buildPlatform)'
-    configuration: '$(buildConfiguration)'
-
-- task: DownloadSecureFile@1
-  name: AuthKey_QWWBGJLG7F
-  displayName: 'Download AuthKey'
-  inputs:
-    secureFile: 'AuthKey_QWWBGJLG7F.p8'
-   
+    projects: '$(solution)'
+    arguments: '--no-restore --configuration $(buildConfiguration)'
+    
 - task: DownloadSecureFile@1
   name: ServiceAccountKeyFile
   displayName: 'Download ServiceAccountKeyFile'
@@ -120,7 +110,7 @@ steps:
 - task: Palmmedia.reportgenerator.reportgenerator-build-release-task.reportgenerator@4
   displayName: 'Create Code Coverage Report'
   inputs:
-    reports: '$(Build.SourcesDirectory)/Tests/**/*.coverage.cobertura.xml'
+    reports: '$(Build.SourcesDirectory)/Tests/**/*.coverage.cobertura*.xml'
     targetdir: '$(Build.SourcesDirectory)/CodeCoverage'
     reporttypes: 'Cobertura'
     assemblyfilters: '-xunit*'
@@ -132,7 +122,7 @@ steps:
     packagesToPack: PushNotifications.Server/PushNotifications.Server.csproj
     versioningScheme: byEnvVar
     versionEnvVar: semVersion
-    
+
 - task: DotNetCoreCLI@2
   displayName: 'Pack PushNotifications.Server.AspNetCore'
   inputs:
@@ -147,7 +137,7 @@ steps:
     SourceFolder: '$(system.defaultworkingdirectory)'
 
     Contents: |
-     **\bin\$(buildConfiguration)\**
+     **\bin\$(BuildConfiguration)\**
      **\bin\*.nupkg
 
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
