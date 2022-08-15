@@ -85,11 +85,17 @@ steps:
     arguments: '--no-restore --configuration $(buildConfiguration)'
     
 - task: DownloadSecureFile@1
+  name: AuthKey_QWWBGJLG7F
+  displayName: 'Download AuthKey'
+  inputs:
+    secureFile: 'AuthKey_QWWBGJLG7F.p8'
+   
+- task: DownloadSecureFile@1
   name: ServiceAccountKeyFile
   displayName: 'Download ServiceAccountKeyFile'
   inputs:
     secureFile: 'ServiceAccountKeyFile.json'
-   
+
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(Agent.TempDirectory)'
