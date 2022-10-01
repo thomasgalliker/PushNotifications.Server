@@ -6,7 +6,7 @@
 		<VersionPrefix>1.0.0</VersionPrefix>
 		<Version>1.0.0</Version>
 		<Authors>Thomas Galliker</Authors>
-		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
 		<AssemblyName>PushNotifications.Server.AspNetCore</AssemblyName>
 		<PackageId>PushNotifications.Server.AspNetCore</PackageId>
 		<PackageTags>APNS;GCM;FCM;PushNotifications;push;notification;PushSharp;AspNetCore;FcmClient;ApnsClient</PackageTags>
@@ -31,7 +31,7 @@
 			1.0.0
 			- Initial release
 		</PackageReleaseNotes>
-		<Copyright>Copyright 2021</Copyright>
+		<Copyright>Copyright 2022</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 	</PropertyGroup>
 
@@ -49,6 +49,10 @@
 
 	<ItemGroup Condition="$(TargetFramework) == 'net5.0'">
 		<PackageReference Include="Microsoft.Extensions.Http" Version="[5.0.0,)" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(TargetFramework) == 'net6.0'">
+		<PackageReference Include="Microsoft.Extensions.Http" Version="[6.0.0,)" />
 	</ItemGroup>
 
 	<ItemGroup>
